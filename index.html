@@ -102,10 +102,10 @@
 </ul>
 <p>如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。</p>
 <ul>
-<li>.rel.plt -&gt; 函数重定位【记录了函数在.got.plt中的地址】</li>
+<li><strong>.rel.plt</strong> -&gt; 函数重定位<mark>【记录了函数在.got.plt中的地址】</mark></li>
 <li>.rel.dyn -&gt; 变量重定位</li>
 <li>.got -&gt; 全局变量偏移表</li>
-<li>.got.plt -&gt; 全局函数偏移表</li>
+<li><strong>.got.plt</strong> -&gt; 全局函数偏移表</li>
 <li>.plt -&gt; 过程链接表【过程链接表把位置独立的函数调用重定向到绝对位置】</li>
 </ul>
 
