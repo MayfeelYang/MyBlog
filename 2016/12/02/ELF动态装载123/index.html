@@ -3,14 +3,9 @@
 <head>
   <meta charset="utf-8">
   
-  <title>我的博客</title>
+  <title>ELF动态装载123 | 我的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="title: ELF动态装载123date: 2016-12-02 10:25categories:
-- 七七八八123
-tags:
-- ELF
-##ELF动态装载123
-ELF执行文件由以下几部分构成:
+  <meta name="description" content="ELF执行文件由以下几部分构成:
 
 ELF头部
 程序头部表和其对应的段
@@ -18,17 +13,15 @@ ELF头部
 
 如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
 
-.rel.pl">
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全局变量偏移表
+.got.plt -&amp;g">
 <meta property="og:type" content="article">
-<meta property="og:title" content="我的博客">
+<meta property="og:title" content="ELF动态装载123">
 <meta property="og:url" content="http://mayfeelyang.github.io/2016/12/02/ELF动态装载123/index.html">
 <meta property="og:site_name" content="我的博客">
-<meta property="og:description" content="title: ELF动态装载123date: 2016-12-02 10:25categories:
-- 七七八八123
-tags:
-- ELF
-##ELF动态装载123
-ELF执行文件由以下几部分构成:
+<meta property="og:description" content="ELF执行文件由以下几部分构成:
 
 ELF头部
 程序头部表和其对应的段
@@ -36,16 +29,14 @@ ELF头部
 
 如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
 
-.rel.pl">
-<meta property="og:updated_time" content="2016-12-02T02:37:53.000Z">
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全局变量偏移表
+.got.plt -&amp;g">
+<meta property="og:updated_time" content="2016-12-02T02:39:07.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="我的博客">
-<meta name="twitter:description" content="title: ELF动态装载123date: 2016-12-02 10:25categories:
-- 七七八八123
-tags:
-- ELF
-##ELF动态装载123
-ELF执行文件由以下几部分构成:
+<meta name="twitter:title" content="ELF动态装载123">
+<meta name="twitter:description" content="ELF执行文件由以下几部分构成:
 
 ELF头部
 程序头部表和其对应的段
@@ -53,7 +44,10 @@ ELF头部
 
 如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
 
-.rel.pl">
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全局变量偏移表
+.got.plt -&amp;g">
   
     <link rel="alternate" href="/atom.xml" title="我的博客" type="application/atom+xml">
   
@@ -109,21 +103,30 @@ ELF头部
         <section id="main"><article id="post-ELF动态装载123" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/MyBlog/2016/12/02/ELF动态装载123/" class="article-date">
-  <time datetime="2016-12-02T02:32:57.000Z" itemprop="datePublished">2016-12-02</time>
+  <time datetime="2016-12-02T02:25:00.000Z" itemprop="datePublished">2016-12-02</time>
 </a>
     
+  <div class="article-category">
+    <a class="article-category-link" href="/MyBlog/categories/七七八八123/">七七八八123</a>
+  </div>
+
   </div>
   <div class="article-inner">
     
     
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      ELF动态装载123
+    </h1>
+  
+
+      </header>
+    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>title: ELF动态装载123<br>date: 2016-12-02 10:25<br>categories:</p>
-<pre><code>- 七七八八123
-</code></pre><p>tags:</p>
-<pre><code>- ELF
-</code></pre><p>##ELF动态装载123</p>
-<p>ELF执行文件由以下几部分构成:</p>
+        <p>ELF执行文件由以下几部分构成:</p>
 <ul>
 <li>ELF头部</li>
 <li>程序头部表和其对应的段</li>
@@ -141,9 +144,11 @@ ELF头部
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF动态装载123/" data-id="ciw76kggl000032c0eq2oc255" class="article-share-link">Share</a>
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF动态装载123/" data-id="ciw76lz4400003nc00jyf11p7" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li></ul>
+
     </footer>
   </div>
   
@@ -169,7 +174,7 @@ ELF头部
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/日志/">日志</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/日志/二级目录/">二级目录</a></li></ul></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/七七八八123/">七七八八123</a></li><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/日志/">日志</a><ul class="category-list-child"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/日志/二级目录/">二级目录</a></li></ul></li></ul>
     </div>
   </div>
 
@@ -179,7 +184,7 @@ ELF头部
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/hello/">hello</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/hello/">hello</a></li></ul>
     </div>
   </div>
 
@@ -189,7 +194,7 @@ ELF头部
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/MyBlog/tags/hello/" style="font-size: 10px;">hello</a>
+      <a href="/MyBlog/tags/ELF/" style="font-size: 10px;">ELF</a> <a href="/MyBlog/tags/hello/" style="font-size: 10px;">hello</a>
     </div>
   </div>
 
@@ -211,7 +216,7 @@ ELF头部
       <ul>
         
           <li>
-            <a href="/MyBlog/2016/12/02/ELF动态装载123/">(no title)</a>
+            <a href="/MyBlog/2016/12/02/ELF动态装载123/">ELF动态装载123</a>
           </li>
         
           <li>
