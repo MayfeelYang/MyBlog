@@ -3,17 +3,42 @@
 <head>
   <meta charset="utf-8">
   
-  <title>归档: 2016/11 | 我的博客</title>
+  <title>我的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="记录生活点滴">
-<meta property="og:type" content="website">
+  <meta name="description" content="#ELF动态装载123    ELF执行文件由以下几部分构成：
+* ELF头部
+* 程序头部表和其对应的段
+* 节区头部表和其对应的节
+如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
+
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全">
+<meta property="og:type" content="article">
 <meta property="og:title" content="我的博客">
-<meta property="og:url" content="http://mayfeelyang.github.io/archives/2016/11/index.html">
+<meta property="og:url" content="http://mayfeelyang.github.io/2016/12/02/ELF动态装载123/index.html">
 <meta property="og:site_name" content="我的博客">
-<meta property="og:description" content="记录生活点滴">
+<meta property="og:description" content="#ELF动态装载123    ELF执行文件由以下几部分构成：
+* ELF头部
+* 程序头部表和其对应的段
+* 节区头部表和其对应的节
+如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
+
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全">
+<meta property="og:updated_time" content="2016-12-02T02:18:36.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我的博客">
-<meta name="twitter:description" content="记录生活点滴">
+<meta name="twitter:description" content="#ELF动态装载123    ELF执行文件由以下几部分构成：
+* ELF头部
+* 程序头部表和其对应的段
+* 节区头部表和其对应的节
+如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
+
+.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
+.rel.dyn -&amp;gt; 变量重定位
+.got -&amp;gt; 全">
   
     <link rel="alternate" href="/atom.xml" title="我的博客" type="application/atom+xml">
   
@@ -66,77 +91,53 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-  
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/MyBlog/archives/2016" class="archive-year">2016</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/MyBlog/2016/11/27/test/" class="archive-article-date">
-  <time datetime="2016-11-27T10:59:14.000Z" itemprop="datePublished">11月 27</time>
+        <section id="main"><article id="post-ELF动态装载123" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/MyBlog/2016/12/02/ELF动态装载123/" class="article-date">
+  <time datetime="2016-12-02T02:16:14.000Z" itemprop="datePublished">2016-12-02</time>
 </a>
-      
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/MyBlog/2016/11/27/test/">test</a>
-    </h1>
-  
-
-    </header>
+    
   </div>
-</article>
-  
+  <div class="article-inner">
     
     
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/MyBlog/2016/11/27/hello/" class="archive-article-date">
-  <time datetime="2016-11-27T10:53:23.000Z" itemprop="datePublished">11月 27</time>
-</a>
+    <div class="article-entry" itemprop="articleBody">
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/MyBlog/2016/11/27/hello/">hello</a>
-    </h1>
-  
+        <p>#ELF动态装载123<br>    ELF执行文件由以下几部分构成：</p>
+<pre><code>* ELF头部
+* 程序头部表和其对应的段
+* 节区头部表和其对应的节
+</code></pre><p>如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。</p>
+<ul>
+<li>.rel.plt -&gt; 函数重定位【记录了函数在.got.plt中的地址】</li>
+<li>.rel.dyn -&gt; 变量重定位</li>
+<li>.got -&gt; 全局变量偏移表</li>
+<li>.got.plt -&gt; 全局函数偏移表</li>
+<li>.plt -&gt; 过程链接表【过程链接表把位置独立的函数调用重定向到绝对位置】</li>
+</ul>
 
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      <a href="/MyBlog/2016/11/26/hello-world/" class="archive-article-date">
-  <time datetime="2016-11-26T02:56:44.000Z" itemprop="datePublished">11月 26</time>
-</a>
       
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/MyBlog/2016/11/26/hello-world/">Hello World</a>
-    </h1>
-  
-
-    </header>
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF动态装载123/" data-id="ciw75wvws0000u9c0j69dprlh" class="article-share-link">Share</a>
+      
+      
+    </footer>
   </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/MyBlog/2016/11/27/test/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">test</div>
+    </a>
+  
+</nav>
+
+  
 </article>
-  
-  
-    </div></section>
-  
 
 </section>
         

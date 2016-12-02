@@ -68,6 +68,80 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-ELF动态装载123" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/MyBlog/2016/12/02/ELF动态装载123/" class="article-date">
+  <time datetime="2016-12-02T02:16:14.000Z" itemprop="datePublished">2016-12-02</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#ELF动态装载123<br>    ELF执行文件由以下几部分构成：</p>
+<pre><code>* ELF头部
+* 程序头部表和其对应的段
+* 节区头部表和其对应的节
+</code></pre><p>如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。</p>
+<ul>
+<li>.rel.plt -&gt; 函数重定位【记录了函数在.got.plt中的地址】</li>
+<li>.rel.dyn -&gt; 变量重定位</li>
+<li>.got -&gt; 全局变量偏移表</li>
+<li>.got.plt -&gt; 全局函数偏移表</li>
+<li>.plt -&gt; 过程链接表【过程链接表把位置独立的函数调用重定向到绝对位置】</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF动态装载123/" data-id="ciw75wvws0000u9c0j69dprlh" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-test" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/MyBlog/2016/11/27/test/" class="article-date">
+  <time datetime="2016-11-27T10:59:14.000Z" itemprop="datePublished">2016-11-27</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/MyBlog/2016/11/27/test/">test</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/11/27/test/" data-id="ciw75wvxi0003u9c0v1vbbu7k" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-hello" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/MyBlog/2016/11/27/hello/" class="article-date">
@@ -103,7 +177,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/11/27/hello/" data-id="civyn9x880000d5c0ka0af7oy" class="article-share-link">Share</a>
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/11/27/hello/" data-id="ciw75wvxf0002u9c0w7d68f9x" class="article-share-link">Share</a>
       
       
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/hello/">hello</a></li></ul>
@@ -150,7 +224,7 @@
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/11/26/hello-world/" data-id="civyn9x960007d5c0hii1f2fv" class="article-share-link">Share</a>
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/11/26/hello-world/" data-id="ciw75wvxd0001u9c02716uyt8" class="article-share-link">Share</a>
       
       
     </footer>
@@ -198,7 +272,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/MyBlog/archives/2016/11/">十一月 2016</a></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/MyBlog/archives/2016/12/">十二月 2016</a></li><li class="archive-list-item"><a class="archive-list-link" href="/MyBlog/archives/2016/11/">十一月 2016</a></li></ul>
     </div>
   </div>
 
@@ -209,6 +283,14 @@
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/MyBlog/2016/12/02/ELF动态装载123/">(no title)</a>
+          </li>
+        
+          <li>
+            <a href="/MyBlog/2016/11/27/test/">test</a>
+          </li>
         
           <li>
             <a href="/MyBlog/2016/11/27/hello/">hello</a>
