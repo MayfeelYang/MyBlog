@@ -71,30 +71,22 @@
     <article id="post-C-类的赋值运算符-的重载、深拷贝、浅拷贝" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" class="article-date">
-  <time datetime="2016-12-03T01:59:54.000Z" itemprop="datePublished">2016-12-03</time>
+  <time datetime="2016-12-03T02:01:56.000Z" itemprop="datePublished">2016-12-03</time>
 </a>
     
-  <div class="article-category">
-    <a class="article-category-link" href="/MyBlog/categories/Preparation/">Preparation</a>
-  </div>
-
   </div>
   <div class="article-inner">
     
     
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/">C++类的赋值运算符=的重载、深拷贝、浅拷贝</a>
-    </h1>
-  
-
-      </header>
-    
     <div class="article-entry" itemprop="articleBody">
       
-        <p>在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。<br><strong>拷贝运算：</strong>如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  </p>
+        <hr>
+<p>title: C++类的赋值运算符=的重载、深拷贝、浅拷贝<br>date: 2016-12-03 09:59:54<br>categories:</p>
+<pre><code>- Preparation
+</code></pre><p>tags: </p>
+<pre><code>- C++
+</code></pre><hr>
+<p>在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。<br><strong>拷贝运算：</strong>如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  </p>
 <pre><code>class1 A(&quot;af&quot;);  
 class1 B=A;
 </code></pre><p>此时其实调用的<code>B(A)</code>这样的浅拷贝操作。<br><strong>赋值运算：</strong> 如果对象在申明之后，在进行的赋值运算，我们称之为赋值运算。例如：  </p>
@@ -103,7 +95,7 @@ class1 B;
 B=A;
 </code></pre><p>此时实际调用的类的缺省赋值函数<code>B.operator=(A);</code>  </p>
 <blockquote>
-<p><strong>不管是浅拷贝还是赋值运算，其都有缺省的定义。</strong>也就是说，即使我们不overload这两种operation,仍然可以运行。<br>那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，<strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。</strong>  </p>
+<p><strong>不管是浅拷贝还是赋值运算，其都有缺省的定义。</strong>也就是说，即使我们不overload这两种operation,仍然可以运行。那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，<strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。</strong>  </p>
 </blockquote>
 <h2 id="类的赋值运算符"><a href="#类的赋值运算符" class="headerlink" title="###类的赋值运算符"></a>###类的赋值运算符</h2><p>####1.C++中对象的内存分配方式<br>在C++中，对象的实例在编译的时候，就需要为其分配内存大小，因此，系统都是在stack上为其分配内存的。<strong>这一点和C#完全不同！</strong>千万记住：在C#中，所有类都是reference type,要创建类的实体，必须通过new在heap上为其分配空间，同时返回在stack上指向其地址的reference.<br>因此，在C++中，只要申明该实例，在程序编译后，就要为其分配相应的内存空间，至于实体内的各个域的值，就由其构造函数决定了。</p>
 <p>例如：  </p>
@@ -354,8 +346,6 @@ int main(int argc, char* argv[]){
       <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" data-id="ciw8jzsvu0000src0i4fjt15o" class="article-share-link">Share</a>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/C/">C++</a></li></ul>
-
     </footer>
   </div>
   
@@ -473,7 +463,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/Preparation/">Preparation</a></li><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/七七八八123/">七七八八123</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/七七八八123/">七七八八123</a></li></ul>
     </div>
   </div>
 
@@ -483,7 +473,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li></ul>
     </div>
   </div>
 
@@ -493,7 +483,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/MyBlog/tags/C/" style="font-size: 10px;">C++</a> <a href="/MyBlog/tags/ELF/" style="font-size: 10px;">ELF</a>
+      <a href="/MyBlog/tags/ELF/" style="font-size: 10px;">ELF</a>
     </div>
   </div>
 
@@ -515,7 +505,7 @@ int main(int argc, char* argv[]){
       <ul>
         
           <li>
-            <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/">C++类的赋值运算符=的重载、深拷贝、浅拷贝</a>
+            <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/">(no title)</a>
           </li>
         
           <li>
