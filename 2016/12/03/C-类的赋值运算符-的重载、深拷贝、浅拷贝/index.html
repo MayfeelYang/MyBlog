@@ -27,7 +27,7 @@ C++
 在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。拷贝运算：如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  
 class1 A(&amp;quot;af&amp;quot;);  
 class1">
-<meta property="og:updated_time" content="2016-12-03T02:57:18.000Z">
+<meta property="og:updated_time" content="2016-12-03T02:58:41.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我的博客">
 <meta name="twitter:description" content="title: C++类的赋值运算符=的重载、深拷贝、浅拷贝date: 2016-12-03 09:59:54categories: 
@@ -118,7 +118,7 @@ class1 B=A;
 class1 B;
 B=A;
 </code></pre><p>此时实际调用的类的缺省赋值函数<code>B.operator=(A);</code>  </p>
-<p>不管是浅拷贝还是赋值运算，其都有缺省的定义。<strong>也就是说，即使我们不overload这两种operation,仍然可以运行。那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，</strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。  </p>
+<p><strong>不管是浅拷贝还是赋值运算，其都有缺省的定义。</strong>也就是说，即使我们不overload这两种operation,仍然可以运行。那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，<strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。</strong>  </p>
 <h3 id="类的赋值运算符"><a href="#类的赋值运算符" class="headerlink" title="类的赋值运算符"></a>类的赋值运算符</h3><hr>
 <h4 id="1-C-中对象的内存分配方式"><a href="#1-C-中对象的内存分配方式" class="headerlink" title="1.C++中对象的内存分配方式"></a>1.C++中对象的内存分配方式</h4><p>在C++中，对象的实例在编译的时候，就需要为其分配内存大小，因此，系统都是在stack上为其分配内存的。<strong>这一点和C#完全不同！</strong>千万记住：在C#中，所有类都是reference type,要创建类的实体，必须通过new在heap上为其分配空间，同时返回在stack上指向其地址的reference.<br>因此，在C++中，只要申明该实例，在程序编译后，就要为其分配相应的内存空间，至于实体内的各个域的值，就由其构造函数决定了。</p>
 <p>例如：  </p>
