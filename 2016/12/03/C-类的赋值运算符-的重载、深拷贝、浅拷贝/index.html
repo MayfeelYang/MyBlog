@@ -25,7 +25,7 @@ tags:
 在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。拷贝运算：如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  
 class1 A(&amp;quot;af&amp;quot;);  
 class">
-<meta property="og:updated_time" content="2016-12-03T02:03:35.000Z">
+<meta property="og:updated_time" content="2016-12-03T02:05:43.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="我的博客">
 <meta name="twitter:description" content="title: C++类的赋值运算符=的重载、深拷贝、浅拷贝date: 2016-12-03 09:59:54categories:
@@ -91,7 +91,7 @@ class">
         <section id="main"><article id="post-C-类的赋值运算符-的重载、深拷贝、浅拷贝" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" class="article-date">
-  <time datetime="2016-12-03T02:01:56.000Z" itemprop="datePublished">2016-12-03</time>
+  <time datetime="2016-12-03T02:05:43.000Z" itemprop="datePublished">2016-12-03</time>
 </a>
     
   </div>
@@ -117,7 +117,8 @@ B=A;
 <blockquote>
 <p><strong>不管是浅拷贝还是赋值运算，其都有缺省的定义。</strong>也就是说，即使我们不overload这两种operation,仍然可以运行。那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，<strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。</strong>  </p>
 </blockquote>
-<h2 id="类的赋值运算符"><a href="#类的赋值运算符" class="headerlink" title="###类的赋值运算符"></a>###类的赋值运算符</h2><p>####1.C++中对象的内存分配方式<br>在C++中，对象的实例在编译的时候，就需要为其分配内存大小，因此，系统都是在stack上为其分配内存的。<strong>这一点和C#完全不同！</strong>千万记住：在C#中，所有类都是reference type,要创建类的实体，必须通过new在heap上为其分配空间，同时返回在stack上指向其地址的reference.<br>因此，在C++中，只要申明该实例，在程序编译后，就要为其分配相应的内存空间，至于实体内的各个域的值，就由其构造函数决定了。</p>
+<h3 id="类的赋值运算符"><a href="#类的赋值运算符" class="headerlink" title="类的赋值运算符"></a>类的赋值运算符</h3><hr>
+<h4 id="1-C-中对象的内存分配方式"><a href="#1-C-中对象的内存分配方式" class="headerlink" title="1.C++中对象的内存分配方式"></a>1.C++中对象的内存分配方式</h4><p>在C++中，对象的实例在编译的时候，就需要为其分配内存大小，因此，系统都是在stack上为其分配内存的。<strong>这一点和C#完全不同！</strong>千万记住：在C#中，所有类都是reference type,要创建类的实体，必须通过new在heap上为其分配空间，同时返回在stack上指向其地址的reference.<br>因此，在C++中，只要申明该实例，在程序编译后，就要为其分配相应的内存空间，至于实体内的各个域的值，就由其构造函数决定了。</p>
 <p>例如：  </p>
 <pre><code>class A{
 public:
@@ -138,12 +139,12 @@ int main(){
     A b;
 }
 </code></pre><p>在程序编译之后，a和b在stack上都被分配相应的内存大小（类里面的成员变量会因为情况不同存储在heap中）。只不过对象a的域都被初始化，而b则都为随机值。</p>
-<p>####2. 缺省情况下的赋值运算符<br>如果我们执行：<code>b=a;</code>则其执行的是缺省定义的缺省的赋值运算。所谓缺省的赋值运算，是指<strong>对象中的所有位于stack中的域，进行相应的复制</strong>。但是，如果对象有位于heap上的域的话，其不会为拷贝对象分配heap上的空间，而只是<strong>指向相同的heap上的同一个地址</strong>。上面的程序中<code>username</code>就是存储在heap上面的。</p>
+<h4 id="2-缺省情况下的赋值运算符"><a href="#2-缺省情况下的赋值运算符" class="headerlink" title="2. 缺省情况下的赋值运算符"></a>2. 缺省情况下的赋值运算符</h4><p>如果我们执行：<code>b=a;</code>则其执行的是缺省定义的缺省的赋值运算。所谓缺省的赋值运算，是指<strong>对象中的所有位于stack中的域，进行相应的复制</strong>。但是，如果对象有位于heap上的域的话，其不会为拷贝对象分配heap上的空间，而只是<strong>指向相同的heap上的同一个地址</strong>。上面的程序中<code>username</code>就是存储在heap上面的。</p>
 <p>因此，对于缺省的赋值运算，如果对象域内没有heap上的空间，其不会产生任何问题。但是，如果对象域内需要申请heap上的空间，那么在析构对象的时候，就会<strong>连续两次释放heap上的同一块内存区域</strong>，从而导致异常。</p>
 <pre><code>~A(){        
     delete name;
 }
-</code></pre><p>####3.解决办法–重载（overload)赋值运算符<br>因此，对于对象的域在heap上分配内存的情况，我们必须重载赋值运算符。当对象间进行拷贝的时候，我们必须让不同对象的成员域指向其不同的heap地址–如果成员域属于heap的话。  </p>
+</code></pre><h4 id="3-解决办法–重载（overload-赋值运算符"><a href="#3-解决办法–重载（overload-赋值运算符" class="headerlink" title="3.解决办法–重载（overload)赋值运算符"></a>3.解决办法–重载（overload)赋值运算符</h4><p>因此，对于对象的域在heap上分配内存的情况，我们必须重载赋值运算符。当对象间进行拷贝的时候，我们必须让不同对象的成员域指向其不同的heap地址–如果成员域属于heap的话。  </p>
 <p>重载赋值运算符后的代码如下：</p>
 <pre><code>class A{
 public:
@@ -178,7 +179,7 @@ int main(){
     b=a;
 }
 </code></pre><p>这样<code>a</code>、<code>b</code>两个实例的<code>name</code>就指向了heap上面不同的区域。<code>a</code>、<code>b</code>在退出相应作用域的时候，调用相应析构函数，然后释放分别属于不同heap空间的内存，程序正常结束。  </p>
-<p>#####references:<br>类的深拷贝函数的重载： </p>
+<h5 id="references"><a href="#references" class="headerlink" title="references:"></a>references:</h5><p>类的深拷贝函数的重载： </p>
 <pre><code>public class A{
 public:
     ...
@@ -219,8 +220,7 @@ void A::operation= (const A &amp;a)
 </code></pre><p>其实，从上可以看出，赋值运算符和拷贝函数很相似。只不过赋值函数最好有返回值（进行链式赋值），返回也最好是对象的引用（为什么不是对象本身呢？note2有讲解）， 而拷贝函数不需要返回任何。同时，赋值函数首先要释放掉对象自身的堆空间（如果需要的话），然后进行其他的operation.而拷贝函数不需要如此，因为<strong><em>对象此时还没有分配堆空间</em></strong>。</p>
 <p><mark>note1:</mark><br><strong><em>不要按值向函数传递对象。</em></strong>如果对象有内部指针指向动态分配的堆内存，丝毫不要考虑把对象按值传递给函数，要按引用传递。并记住：若函数不能改变参数对象的状态和目标对象的状态，则要使用const修饰符!</p>
 <p><mark>note2:</mark><br>问题：<br>    对于类的成员需要动态申请堆空间的类的对象，大家都知道，我们都最好要overload其赋值函数和拷贝函数。拷贝构造函数是没有任何返回类型的，这点毋庸置疑。 而赋值函数可以返回多种类型，例如以上讲的void,类本身class1，以及类的引用 class &amp;? 问，这几种赋值函数的返回各有什么异同？<br>答：1 如果赋值函数返回的是void ，我们知道，其唯一一点需要注意的是，其不支持链式赋值运算，即a=b=c这样是不允许的！<br>2 对于返回的是类对象本身，还是类对象的引用，其有着本质的区别！</p>
-<p>######第一：如果其返回的是类对象本身。  </p>
-<pre><code>A operator =(A&amp; a){
+<h6 id="第一：如果其返回的是类对象本身。"><a href="#第一：如果其返回的是类对象本身。" class="headerlink" title="第一：如果其返回的是类对象本身。"></a>第一：如果其返回的是类对象本身。</h6><pre><code>A operator =(A&amp; a){
     if(name!=NULL)
         delete name;
     this-&gt;_id=a._id;
@@ -242,7 +242,16 @@ B=A;
 <li>临时对象结束，调用临时对象析构函数，释放临时对象堆内存  </li>
 </ul>
 <p><strong>但是，在这些步骤里面，如果第4步，我们没有overload 拷贝函数，也就是没有进行深拷贝。那么在进行第5步释放临时对象的heap 空间时，将释放掉的是和目标对象同一块的heap空间。这样当目标对象B作用域结束调用析构函数时，就会产生错误！！</strong></p>
-<p>######第二：如果赋值运算符返回的是对象的引用.<br>    A&amp; operator =(A&amp; a){<br>        if(name!=NULL)<br>            delete name;<br>        this-&gt;_id=a._id;<br>        int len=strlen(a.name);<br>        name=new char[len+1];<br>        strcpy(name,a.name);<br>        return *this;<br>    }<br>那么其过程如下:  </p>
+<h6 id="第二：如果赋值运算符返回的是对象的引用"><a href="#第二：如果赋值运算符返回的是对象的引用" class="headerlink" title="第二：如果赋值运算符返回的是对象的引用."></a>第二：如果赋值运算符返回的是对象的引用.</h6><pre><code>A&amp; operator =(A&amp; a){
+    if(name!=NULL)
+        delete name;
+    this-&gt;_id=a._id;
+    int len=strlen(a.name);
+    name=new char[len+1];
+    strcpy(name,a.name);
+    return *this;
+}    
+</code></pre><p>那么其过程如下:  </p>
 <ul>
 <li>释放掉原来对象所占有的堆空间</li>
 <li>申请一块新的堆内存</li>
