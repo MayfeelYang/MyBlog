@@ -3,51 +3,17 @@
 <head>
   <meta charset="utf-8">
   
-  <title>ELF动态装载123 | 我的博客</title>
+  <title>Tag: C++ | 我的博客</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="ELF执行文件由以下几部分构成:
-
-ELF头部
-程序头部表和其对应的段
-节区头部表和其对应的节
-
-如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
-
-.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
-.rel.dyn -&amp;gt; 变量重定位
-.got -&amp;gt; 全局变量偏移表
-.got.plt -&amp;g">
-<meta property="og:type" content="article">
-<meta property="og:title" content="ELF动态装载123">
-<meta property="og:url" content="http://mayfeelyang.github.io/2016/12/02/ELF动态装载123/index.html">
+  <meta name="description" content="记录生活点滴">
+<meta property="og:type" content="website">
+<meta property="og:title" content="我的博客">
+<meta property="og:url" content="http://mayfeelyang.github.io/tags/C/index.html">
 <meta property="og:site_name" content="我的博客">
-<meta property="og:description" content="ELF执行文件由以下几部分构成:
-
-ELF头部
-程序头部表和其对应的段
-节区头部表和其对应的节
-
-如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
-
-.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
-.rel.dyn -&amp;gt; 变量重定位
-.got -&amp;gt; 全局变量偏移表
-.got.plt -&amp;g">
-<meta property="og:updated_time" content="2016-12-03T03:00:20.000Z">
+<meta property="og:description" content="记录生活点滴">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="ELF动态装载123">
-<meta name="twitter:description" content="ELF执行文件由以下几部分构成:
-
-ELF头部
-程序头部表和其对应的段
-节区头部表和其对应的节
-
-如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。
-
-.rel.plt -&amp;gt; 函数重定位【记录了函数在.got.plt中的地址】
-.rel.dyn -&amp;gt; 变量重定位
-.got -&amp;gt; 全局变量偏移表
-.got.plt -&amp;g">
+<meta name="twitter:title" content="我的博客">
+<meta name="twitter:description" content="记录生活点滴">
   
     <link rel="alternate" href="/atom.xml" title="我的博客" type="application/atom+xml">
   
@@ -100,80 +66,39 @@ ELF头部
   </div>
 </header>
       <div class="outer">
-        <section id="main"><article id="post-ELF动态装载123" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/MyBlog/2016/12/02/ELF动态装载123/" class="article-date">
-  <time datetime="2016-12-02T02:25:00.000Z" itemprop="datePublished">2016-12-02</time>
-</a>
-    
-  <div class="article-category">
-    <a class="article-category-link" href="/MyBlog/categories/七七八八123/">七七八八123</a>
-  </div>
-
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
+        <section id="main">
   
-    <h1 class="article-title" itemprop="name">
-      ELF动态装载123
+  
+    
+    
+      
+      
+      <section class="archives-wrap">
+        <div class="archive-year-wrap">
+          <a href="/MyBlog/archives/2016" class="archive-year">2016</a>
+        </div>
+        <div class="archives">
+    
+    <article class="archive-article archive-type-post">
+  <div class="archive-article-inner">
+    <header class="archive-article-header">
+      <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" class="archive-article-date">
+  <time datetime="2016-12-03T02:25:00.000Z" itemprop="datePublished">12月 3</time>
+</a>
+      
+  
+    <h1 itemprop="name">
+      <a class="archive-article-title" href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/">C++类的赋值运算符=的重载、深拷贝、浅拷贝</a>
     </h1>
   
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p>ELF执行文件由以下几部分构成:</p>
-<ul>
-<li>ELF头部</li>
-<li>程序头部表和其对应的段</li>
-<li>节区头部表和其对应的节</li>
-</ul>
-<p>如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。</p>
-<ul>
-<li><strong>.rel.plt</strong> -&gt; 函数重定位<mark>【记录了函数在.got.plt中的地址】</mark></li>
-<li>.rel.dyn -&gt; 变量重定位</li>
-<li>.got -&gt; 全局变量偏移表</li>
-<li><strong>.got.plt</strong> -&gt; 全局函数偏移表</li>
-<li>.plt -&gt; 过程链接表【过程链接表把位置独立的函数调用重定向到绝对位置】</li>
-</ul>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF动态装载123/" data-id="ciw8mtkxg0000e9c01cmqndzx" class="article-share-link">Share</a>
-      
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li></ul>
-
-    </footer>
+    </header>
   </div>
-  
-    
-<nav id="article-nav">
-  
-    <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" id="article-nav-newer" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Newer</strong>
-      <div class="article-nav-title">
-        
-          C++类的赋值运算符=的重载、深拷贝、浅拷贝
-        
-      </div>
-    </a>
-  
-  
-    <a href="/MyBlog/2016/11/26/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <strong class="article-nav-caption">Older</strong>
-      <div class="article-nav-title">Hello World</div>
-    </a>
-  
-</nav>
-
-  
 </article>
+  
+  
+    </div></section>
+  
 
 </section>
         
