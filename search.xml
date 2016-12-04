@@ -22,11 +22,9 @@
     
     <entry>
       <title><![CDATA[C++类的赋值运算符=的重载、深拷贝、浅拷贝]]></title>
-      <url>http://mayfeelyang.github.io/MyBlog/2016/12/03/C-%E7%B1%BB%E7%9A%84%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6-%E7%9A%84%E9%87%8D%E8%BD%BD%E3%80%81%E6%B7%B1%E6%8B%B7%E8%B4%9D%E3%80%81%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
-      <content type="html"><![CDATA[<p>在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。<br><strong>拷贝运算：</strong>如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  </p>
-<pre><code>class1 A(&quot;af&quot;);  
-class1 B=A;
-</code></pre><p>此时其实调用的<code>B(A)</code>这样的浅拷贝操作。<br><strong>赋值运算：</strong> 如果对象在申明之后，在进行的赋值运算，我们称之为赋值运算。例如：  </p>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/12/03/C++%E7%B1%BB%E7%9A%84%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6-%E7%9A%84%E9%87%8D%E8%BD%BD%E3%80%81%E6%B7%B1%E6%8B%B7%E8%B4%9D%E3%80%81%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
+      <content type="html"><![CDATA[<p>在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。<br><strong>拷贝运算：</strong>如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：<br><figure class="highlight abnf"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">class1 A(<span class="string">"af"</span>)<span class="comment">;  </span></div><div class="line">class1 B=A<span class="comment">;</span></div></pre></td></tr></table></figure></p>
+<p>此时其实调用的<code>B(A)</code>这样的浅拷贝操作。<br><strong>赋值运算：</strong> 如果对象在申明之后，在进行的赋值运算，我们称之为赋值运算。例如：  </p>
 <pre><code>class1 A(&quot;af&quot;); 
 class1 B;
 B=A;
