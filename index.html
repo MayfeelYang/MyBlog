@@ -68,6 +68,59 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-symfuzz的实现" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/MyBlog/2016/12/04/symfuzz的实现/" class="article-date">
+  <time datetime="2016-12-04T02:25:00.000Z" itemprop="datePublished">2016-12-04</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/MyBlog/categories/模糊测试/">模糊测试</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/MyBlog/2016/12/04/symfuzz的实现/">SYMFUZZ的系统实现</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>#SYMFUZZ的系统实现<br>系统主要基于BAP，利用了PIN 进行二进制插桩。<br>系统由三部分构成：  </p>
+<ul>
+<li><strong>Symbolic Analysis</strong>: 输入<code>seed s</code>，计算得出<code>Mutational Ratios r</code><ul>
+<li><strong>tainted-block optimization</strong>: 对每个被插桩的基本块，实现了轻量级的污点分析。为了减少符号分析的开销，没有被污点信息覆盖的基本块，符号执行时不考虑。</li>
+<li><strong>JIT and PD caching</strong>: 为了提高性能，JIT存储最近使用的BAP ILs，PD存储当前计算出的post-dominator结点。</li>
+<li><strong>set memorization</strong></li>
+</ul>
+</li>
+<li><strong>Mutational Fuzzing</strong>: 基于<code>r</code>进行变异，并监控crash的产生，并使用了Floyd-Bentley算法来计算k-subset，时间复杂度O(k),空间复杂度O(k)。输入样本为Nbits。</li>
+<li><strong>Safe Stack Hash</strong>: 取调用栈中最近的五个函数调用来计算hash值。</li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="http://mayfeelyang.github.io/MyBlog/2016/12/04/symfuzz的实现/" data-id="ciwa305oe0000bfc03mx6kr6s" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/BAP/">BAP</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/symbolic-analysis/">symbolic analysis</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/MyBlog/tags/symfuzz/">symfuzz</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-C-类的赋值运算符-的重载、深拷贝、浅拷贝" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/" class="article-date">
@@ -480,7 +533,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">分类</h3>
     <div class="widget">
-      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/Preparation/">Preparation</a></li><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/七七八八123/">七七八八123</a></li></ul>
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/Preparation/">Preparation</a></li><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/七七八八123/">七七八八123</a></li><li class="category-list-item"><a class="category-list-link" href="/MyBlog/categories/模糊测试/">模糊测试</a></li></ul>
     </div>
   </div>
 
@@ -490,7 +543,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/BAP/">BAP</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/C/">C++</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/ELF/">ELF</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/symbolic-analysis/">symbolic analysis</a></li><li class="tag-list-item"><a class="tag-list-link" href="/MyBlog/tags/symfuzz/">symfuzz</a></li></ul>
     </div>
   </div>
 
@@ -500,7 +553,7 @@ int main(int argc, char* argv[]){
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/MyBlog/tags/C/" style="font-size: 10px;">C++</a> <a href="/MyBlog/tags/ELF/" style="font-size: 10px;">ELF</a>
+      <a href="/MyBlog/tags/BAP/" style="font-size: 10px;">BAP</a> <a href="/MyBlog/tags/C/" style="font-size: 10px;">C++</a> <a href="/MyBlog/tags/ELF/" style="font-size: 10px;">ELF</a> <a href="/MyBlog/tags/symbolic-analysis/" style="font-size: 10px;">symbolic analysis</a> <a href="/MyBlog/tags/symfuzz/" style="font-size: 10px;">symfuzz</a>
     </div>
   </div>
 
@@ -520,6 +573,10 @@ int main(int argc, char* argv[]){
     <h3 class="widget-title">最新文章</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/MyBlog/2016/12/04/symfuzz的实现/">SYMFUZZ的系统实现</a>
+          </li>
         
           <li>
             <a href="/MyBlog/2016/12/03/C-类的赋值运算符-的重载、深拷贝、浅拷贝/">C++类的赋值运算符=的重载、深拷贝、浅拷贝</a>
