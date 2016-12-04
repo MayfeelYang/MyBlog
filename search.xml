@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+    
+    <entry>
+      <title><![CDATA[SYMFUZZ的系统实现]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/12/04/symfuzz%E7%9A%84%E5%AE%9E%E7%8E%B0/</url>
+      <content type="html"><![CDATA[<h1 id="SYMFUZZ的系统实现"><a href="#SYMFUZZ的系统实现" class="headerlink" title="SYMFUZZ的系统实现"></a>SYMFUZZ的系统实现</h1><p>系统主要基于BAP，利用了PIN 进行二进制插桩。<br>系统由三部分构成：  </p>
+<ul>
+<li><strong>Symbolic Analysis</strong>: 输入<code>seed s</code>，计算得出<code>Mutational Ratios r</code><ul>
+<li><strong>tainted-block optimization</strong>: 对每个被插桩的基本块，实现了轻量级的污点分析。为了减少符号分析的开销，没有被污点信息覆盖的基本块，符号执行时不考虑。</li>
+<li><strong>JIT and PD caching</strong>: 为了提高性能，JIT存储最近使用的BAP ILs，PD存储当前计算出的post-dominator结点。</li>
+<li><strong>set memorization</strong></li>
+</ul>
+</li>
+<li><strong>Mutational Fuzzing</strong>: 基于<code>r</code>进行变异，并监控crash的产生，并使用了Floyd-Bentley算法来计算k-subset，时间复杂度O(k),空间复杂度O(k)。输入样本为Nbits。</li>
+<li><strong>Safe Stack Hash</strong>: 取调用栈中最近的五个函数调用来计算hash值。</li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[C++类的赋值运算符=的重载、深拷贝、浅拷贝]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/12/03/C-%E7%B1%BB%E7%9A%84%E8%B5%8B%E5%80%BC%E8%BF%90%E7%AE%97%E7%AC%A6-%E7%9A%84%E9%87%8D%E8%BD%BD%E3%80%81%E6%B7%B1%E6%8B%B7%E8%B4%9D%E3%80%81%E6%B5%85%E6%8B%B7%E8%B4%9D/</url>
+      <content type="html"><![CDATA[<p>在面向对象程序设计中，对象间的相互拷贝和赋值是经常进行的操作。<br><strong>拷贝运算：</strong>如果对象在申明的同时马上进行的初始化操作，则称之为拷贝运算。例如：  </p>
+<pre><code>class1 A(&quot;af&quot;);  
+class1 B=A;
+</code></pre><p>此时其实调用的<code>B(A)</code>这样的浅拷贝操作。<br><strong>赋值运算：</strong> 如果对象在申明之后，在进行的赋值运算，我们称之为赋值运算。例如：  </p>
+<pre><code>class1 A(&quot;af&quot;); 
+class1 B;
+B=A;
+</code></pre><p>此时实际调用的类的缺省赋值函数<code>B.operator=(A);</code>  </p>
+<p><strong>不管是浅拷贝还是赋值运算，其都有缺省的定义。</strong>也就是说，即使我们不overload这两种operation,仍然可以运行。那么，我们到底需不需要overload这两种operation 呢？答案就是：一般，<strong>我们我们需要手动编写析构函数的类，都需要overload 拷贝函数和赋值运算符。</strong>  </p>
+<h3 id="类的赋值运算符"><a href="#类的赋值运算符" class="headerlink" title="类的赋值运算符"></a>类的赋值运算符</h3><hr>
+<h4 id="1-C-中对象的内存分配方式"><a href="#1-C-中对象的内存分配方式" class="headerlink" title="1.C++中对象的内存分配方式"></a>1.C++中对象的内存分配方式</h4><p>在C++中，对象的实例在编译的时候，就需要为其分配内存大小，因此，系统都是在stack上为其分配内存的。<strong>这一点和C#完全不同！</strong>千万记住：在C#中，所有类都是reference type,要创建类的实体，必须通过new在heap上为其分配空间，同时返回在stack上指向其地址的reference.<br>因此，在C++中，只要申明该实例，在程序编译后，就要为其分配相应的内存空间，至于实体内的各个域的值，就由其构造函数决定了。</p>
+<p>例如: </p>
+<pre><code>class A{
+public:
+    A(){
+    }
+    A(int id, char *t_name){
+        _id = id;
+        name = new char[strlen(t_name) + 1];
+        strcpy(name, t_name);
+    }
+private:
+    char *name;
+    int _id;
+}
+
+int main(){
+    A a(1, &quot;herengang&quot;);
+    A b;
+}
+</code></pre><p>在程序编译之后，a和b在stack上都被分配相应的内存大小（类里面的成员变量会因为情况不同存储在heap中）。只不过对象a的域都被初始化，而b则都为随机值。</p>
+<h4 id="2-缺省情况下的赋值运算符"><a href="#2-缺省情况下的赋值运算符" class="headerlink" title="2. 缺省情况下的赋值运算符"></a>2. 缺省情况下的赋值运算符</h4><p>如果我们执行：<code>b=a;</code>则其执行的是缺省定义的缺省的赋值运算。所谓缺省的赋值运算，是指<strong>对象中的所有位于stack中的域，进行相应的复制</strong>。但是，如果对象有位于heap上的域的话，其不会为拷贝对象分配heap上的空间，而只是<strong>指向相同的heap上的同一个地址</strong>。上面的程序中<code>username</code>就是存储在heap上面的。</p>
+<p>因此，对于缺省的赋值运算，如果对象域内没有heap上的空间，其不会产生任何问题。但是，如果对象域内需要申请heap上的空间，那么在析构对象的时候，就会<strong>连续两次释放heap上的同一块内存区域</strong>，从而导致异常。</p>
+<pre><code>~A(){        
+    delete name;
+}
+</code></pre><h4 id="3-解决办法–重载（overload-赋值运算符"><a href="#3-解决办法–重载（overload-赋值运算符" class="headerlink" title="3.解决办法–重载（overload)赋值运算符"></a>3.解决办法–重载（overload)赋值运算符</h4><p>因此，对于对象的域在heap上分配内存的情况，我们必须重载赋值运算符。当对象间进行拷贝的时候，我们必须让不同对象的成员域指向其不同的heap地址–如果成员域属于heap的话。  </p>
+<p>重载赋值运算符后的代码如下：</p>
+<pre><code>class A{
+public:
+    A(){
+    }
+    A(int id,char *t_name){
+        _id=id;
+        name=new char[strlen(t_name)+1];
+        strcpy(name,t_name);
+    }    
+    A&amp; operator =(A&amp; a){  //注意：此处一定要返回对象的引用，否则返回后其值立即消失！
+        if(name!=NULL)
+        delete name;
+        this-&gt;_id=a._id;
+        int len=strlen(a.name);
+        name=new char[len+1];
+        strcpy(name,a.name);
+        return *this;
+    }
+    ~A(){
+        cout&lt;&lt;&quot;~destructor&quot;&lt;&lt;endl;
+        delete name;
+    }
+private:
+    int _id;
+    char *name;
+};
+
+int main(){
+    A a(1,&quot;herengang&quot;);
+    A b;
+    b=a;
+}
+</code></pre><p>这样<code>a</code>、<code>b</code>两个实例的<code>name</code>就指向了heap上面不同的区域。<code>a</code>、<code>b</code>在退出相应作用域的时候，调用相应析构函数，然后释放分别属于不同heap空间的内存，程序正常结束。  </p>
+<h5 id="references"><a href="#references" class="headerlink" title="references:"></a>references:</h5><p>类的深拷贝函数的重载： </p>
+<pre><code>public class A{
+public:
+    ...
+    A(A &amp;a);//重载拷贝函数
+    A&amp; operator=(const A &amp;b);//重载赋值函数
+    //或者,也可以这样重载赋值运算符 void operator=(const A &amp;a);即不返回任何值。如果这样的话，他将不支持客户代买中的链式赋值
+private:
+    int _id;
+    char *username;
+}    
+A::A(A &amp;a){
+    _id = a._id;
+    username = new char[strlen(a.username) + 1];
+    if(username != NULL)
+    strcpy(username, a.usernam);
+}
+A&amp; A::operaton=(const A &amp;a){
+    if(this == &amp;a) // 如果不判断，释放后再赋值，就会出现严重的问题
+        return *this;
+    if(username != NULL)
+        delete username;
+    _id = a._id;
+    username = new char[strlen(a.username) + 1];
+    if(username != NULL)
+        strcpy(username, a.usernam);
+    return *this;    
+}
+//另外一种写法：
+void A::operation= (const A &amp;a)
+{
+    if(username != NULL)
+        delete username;
+    _id = a._id;
+    username = new char[strlen(a.username) + 1];
+    if(username != NULL)
+        strcpy(username,a.usernam);
+}
+</code></pre><p>其实，从上可以看出，赋值运算符和拷贝函数很相似。只不过赋值函数最好有返回值（进行链式赋值），返回也最好是对象的引用（为什么不是对象本身呢？note2有讲解）， 而拷贝函数不需要返回任何。同时，赋值函数首先要释放掉对象自身的堆空间（如果需要的话），然后进行其他的operation.而拷贝函数不需要如此，因为<strong><em>对象此时还没有分配堆空间</em></strong>。</p>
+<p><mark>note1:</mark><br><strong><em>不要按值向函数传递对象。</em></strong>如果对象有内部指针指向动态分配的堆内存，丝毫不要考虑把对象按值传递给函数，要按引用传递。并记住：若函数不能改变参数对象的状态和目标对象的状态，则要使用const修饰符!</p>
+<p><mark>note2:</mark><br>问题：<br>    对于类的成员需要动态申请堆空间的类的对象，大家都知道，我们都最好要overload其赋值函数和拷贝函数。拷贝构造函数是没有任何返回类型的，这点毋庸置疑。 而赋值函数可以返回多种类型，例如以上讲的void,类本身class1，以及类的引用 class &amp;? 问，这几种赋值函数的返回各有什么异同？<br>答：1 如果赋值函数返回的是void ，我们知道，其唯一一点需要注意的是，其不支持链式赋值运算，即a=b=c这样是不允许的！<br>2 对于返回的是类对象本身，还是类对象的引用，其有着本质的区别！</p>
+<h6 id="第一：如果其返回的是类对象本身。"><a href="#第一：如果其返回的是类对象本身。" class="headerlink" title="第一：如果其返回的是类对象本身。"></a>第一：如果其返回的是类对象本身。</h6><pre><code>A operator =(A&amp; a){
+    if(name!=NULL)
+        delete name;
+    this-&gt;_id=a._id;
+    int len=strlen(a.name);
+    name=new char[len+1];
+    strcpy(name,a.name);
+    return *this;
+}
+</code></pre><p>其过程是这样的：  </p>
+<pre><code>class1 A(&quot;herengnag&quot;);
+class1 B;   
+B=A;    
+</code></pre><p>看似简单的赋值操作，其所有的过程如下：</p>
+<ul>
+<li>释放对象原来的堆资源</li>
+<li>重新申请堆空间</li>
+<li>拷贝源的值到对象的堆空间的值</li>
+<li>创建临时对象（调用临时对象拷贝构造函数），将临时对象返回</li>
+<li>临时对象结束，调用临时对象析构函数，释放临时对象堆内存  </li>
+</ul>
+<p><strong>但是，在这些步骤里面，如果第4步，我们没有overload 拷贝函数，也就是没有进行深拷贝。那么在进行第5步释放临时对象的heap 空间时，将释放掉的是和目标对象同一块的heap空间。这样当目标对象B作用域结束调用析构函数时，就会产生错误！！</strong></p>
+<h6 id="第二：如果赋值运算符返回的是对象的引用"><a href="#第二：如果赋值运算符返回的是对象的引用" class="headerlink" title="第二：如果赋值运算符返回的是对象的引用."></a>第二：如果赋值运算符返回的是对象的引用.</h6><pre><code>A&amp; operator =(A&amp; a){
+    if(name!=NULL)
+        delete name;
+    this-&gt;_id=a._id;
+    int len=strlen(a.name);
+    name=new char[len+1];
+    strcpy(name,a.name);
+    return *this;
+}    
+</code></pre><p>那么其过程如下:  </p>
+<ul>
+<li>释放掉原来对象所占有的堆空间</li>
+<li>申请一块新的堆内存</li>
+<li>将源对象的堆内存的值copy给新的堆内存</li>
+<li>返回源对象的引用</li>
+<li>结束  </li>
+</ul>
+<p><strong>因此，如果赋值运算符返回的是对象引用，那么其不会调用类的拷贝构造函数，这是问题的关键所在！！</strong></p>
+<p>完整代码如下：</p>
+<pre><code>#include &quot;stdafx.h&quot;
+#include &quot;string.h&quot;
+#include &quot;stdlib.h&quot;
+#include &quot;assert.h&quot;
+
+class complex{
+public:
+    int real;
+    int virt;
+public:
+    complex(){
+        real = virt = 0;
+    }
+    complex(int treal,int tvirt){
+        real = treal;
+        virt = tvirt;
+    }
+    complex operator+(const complex &amp;x){
+        real += x.real;
+        virt += x.virt;
+        return *this;
+    }
+    complex operator=(const complex &amp;x){
+        return complex(x.real, x.virt);
+    }
+};
+
+class A{
+public:
+    A(){
+        m_username=NULL;
+        printf(&quot;null constructor&quot;);
+    }
+    A(char *username){
+        int len;
+        len = strlen(username);
+        m_username = new char[len+1];  //(char*)malloc(sizeof(len+1));
+        strcpy(m_username, username);
+        printf(&quot;&quot;nUsername is %s&quot;n&quot;, m_username);
+    }
+
+    A(A &amp;a);
+    A operator=(A &amp;b);
+    int test(const int &amp;x){
+        return x;
+    }
+
+    virtual ~A(){
+    //    if(m_username)
+        {
+        delete m_username;
+        printf(&quot;&quot;nA is destructed&quot;n&quot;);
+        }
+    }
+protected:
+    char *m_username;
+
+};
+A::A(A &amp;a){
+    int len = strlen(a.m_username);
+    this-&gt;m_username = new char[len+2];
+    strcpy(m_username, a.m_username);
+    strcat(m_username, &quot;f&quot;);
+    printf(&quot;&quot;ndeep copy function&quot;);
+}
+A A::operator=(A &amp;b){
+    if(m_username)
+        delete m_username;        
+    int len = strlen(b.m_username);
+    this-&gt;m_username = new char[len+1];
+    strcpy(m_username, b.m_username);
+    // printf(&quot;copied successfully!&quot;);
+    return *this;
+}
+
+class B:public A{
+public:
+    B(char *username,char *password):A(username){
+        int len = strlen(password) + 1;
+        m_password = new char[len]; //(char *)malloc(sizeof(len));
+        strcpy(m_password, password);
+        printf(&quot;username:%s, password:%s&quot;n&quot;, m_username, m_password);
+    }
+    ~B(){
+        delete m_password;
+        printf(&quot;B is destructed&quot;n&quot;);
+    }
+protected:
+    char *m_password;
+};
+
+int main(int argc, char* argv[]){
+    //B b(&quot;herengang&quot;,&quot;982135&quot;);
+    //A *a=&amp;b;
+    //delete a;
+    A a(&quot;haha&quot;);
+    A b;
+
+    printf(&quot;&quot;nbegin to invoke copy function&quot;);
+    b = a;
+
+    //printf(&quot;%d&quot;, b.test(2));
+    //complex x(1, 3), y(1, 4);
+    //x = (x + y);
+    //printf(&quot;%d, %d&quot;, x.real, x.virt);
+    return 0;
+}
+</code></pre>]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[ELF动态装载123]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/12/02/ELF%E5%8A%A8%E6%80%81%E8%A3%85%E8%BD%BD123/</url>
+      <content type="html"><![CDATA[<p>ELF执行文件由以下几部分构成:</p>
+<ul>
+<li>ELF头部</li>
+<li>程序头部表和其对应的段</li>
+<li>节区头部表和其对应的节</li>
+</ul>
+<p>如果一个可执行文件参与动态链接，它的程序头部表将包含类型为PT_DYNAMIC的段，它包含.dynamic节区。</p>
+<ul>
+<li><strong>.rel.plt</strong> -&gt; 函数重定位<mark>【记录了函数在.got.plt中的地址】</mark></li>
+<li>.rel.dyn -&gt; 变量重定位</li>
+<li>.got -&gt; 全局变量偏移表</li>
+<li><strong>.got.plt</strong> -&gt; 全局函数偏移表</li>
+<li>.plt -&gt; 过程链接表【过程链接表把位置独立的函数调用重定向到绝对位置】</li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[Hello World]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/11/26/hello-world/</url>
+      <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo new <span class="string">"My New Post"</span></div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="external">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo server</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="external">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo generate</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="external">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$ hexo deploy</div></pre></td></tr></table></figure>
+<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="external">Deployment</a></p>
+]]></content>
+    </entry>
+    
+  
+  
+</search>
