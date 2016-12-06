@@ -4,6 +4,65 @@
   
     
     <entry>
+      <title><![CDATA[Driller:AugmentingFuzzingThroughSelectiveSymbolicExecution-阅读笔记]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2016/12/05/Driller-AugmentingFuzzingThroughSelectiveSymbolicExecution-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
+      <content type="html"><![CDATA[<h5 id="简介："><a href="#简介：" class="headerlink" title="简介："></a>简介：</h5><p>Driller会对fuzzer感兴趣的路径进行符号执行，然后根据路径的条件，产生fuzzer无法满足的输入。  </p>
+<h1 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a>Introduction</h1><hr>
+<p>自动化的漏洞分析工具大概可分为三类</p>
+<ul>
+<li><strong>static analysis system</strong><ul>
+<li>cons：<ul>
+<li>a large amount of false positives</li>
+<li>cannot provide “actionable input”</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>dynamic analysis system</strong>: such as “fuzzer”<ul>
+<li>cons:<ul>
+<li>need “input test cases” - considerable manual effort</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>concolic analysis system</strong>: 利用了程序解释以及约束求解的方法产生输入<ul>
+<li>cons:<ul>
+<li>path explosion</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>基于以上几点，进行总结：fuzzer随机产生输入，无法通过程序对输入的一些检测；concolic execution虽然能通过输入检测，但由于路径爆炸的问题，影响其能分析的程序深度。所以隐藏在深层逻辑中的缺陷难以被发现。</strong>  </p>
+<p>考虑fuzzing和selective concolic execution结合。<br><strong>fuzzing —- within a compartment</strong><br><strong>selective concolic execution —-  between compartments</strong></p>
+<p><strong>so</strong>  </p>
+<p><strong><em>fuzzing</em></strong> -&gt; <strong>initial compartment</strong> -&gt; <strong><em>concolic</em></strong> -&gt; <strong>next compartment</strong> -&gt; <strong><em>fuzzing</em></strong> -&gt; <strong>new compartment</strong></p>
+<h1 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h1><hr>
+<ul>
+<li>Guided Fuzzing<ul>
+<li>Dowser</li>
+<li>BuzzFuzz</li>
+<li>Flayer<br>未完。。。。需继续阅读</li>
+</ul>
+</li>
+</ul>
+<h1 id="Driller-Overview"><a href="#Driller-Overview" class="headerlink" title="Driller Overview"></a>Driller Overview</h1><p>Driller process two different classes of user input:</p>
+<ul>
+<li>general input: a wide range of values that can be valid</li>
+<li>specific input: input that must take on one of a select few possible values.</li>
+</ul>
+<p><strong>Components of Driller</strong>  </p>
+<ul>
+<li><strong>Input test cases</strong>: 可有可无，但是有输入用例，可以加速初始模糊测试的阶段，将目标指向某compartments。</li>
+<li><strong>fuzzing</strong>: 模糊测试引擎寻找第一个compartment，直到遇到第一个复杂的specific input的检查。fuzzing engine -&gt; “stuck”</li>
+<li><strong>concolic execution</strong>: 通过fuzzing模块生成的用例，追踪fuzzing模块已经到达的路径，本模块使用约束求解来发现未知路径，通过求解结果构造新的输入用例。</li>
+<li><strong>repeat</strong>:</li>
+</ul>
+<p>【未完待续。。。】</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[markdown的使用-马克飞象]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2016/12/04/markdown%E4%BD%BF%E7%94%A8-%E9%A9%AC%E5%85%8B%E9%A3%9E%E8%B1%A1/</url>
       <content type="html"><![CDATA[<h1 id="欢迎使用马克飞象"><a href="#欢迎使用马克飞象" class="headerlink" title="欢迎使用马克飞象"></a>欢迎使用马克飞象</h1><p>@(示例笔记本)[马克飞象|帮助|Markdown]</p>
@@ -83,7 +142,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#97;&#105;&#108;&#116;&#x6f;&#x3a;&#104;&#x75;&#115;&#116;&#103;&#x6f;&#x63;&#107;&#64;&#x67;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;">&#104;&#x75;&#115;&#116;&#103;&#x6f;&#x63;&#107;&#64;&#x67;&#109;&#97;&#x69;&#108;&#46;&#99;&#111;&#109;</a></li>
+<li>邮箱：<a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x68;&#117;&#115;&#x74;&#x67;&#x6f;&#99;&#x6b;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#x68;&#117;&#115;&#x74;&#x67;&#x6f;&#99;&#x6b;&#x40;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
