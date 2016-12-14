@@ -6,7 +6,17 @@
     <entry>
       <title><![CDATA[OSS-FUZZ相关调研]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2016/12/14/OSS-FUZZ%E7%9B%B8%E5%85%B3%E8%B0%83%E7%A0%94/</url>
-      <content type="html"><![CDATA[<h1 id="第一次调研"><a href="#第一次调研" class="headerlink" title="第一次调研"></a>第一次调研</h1><h2 id="Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software"><a href="#Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software" class="headerlink" title="Announcing OSS-Fuzz: Continuous fuzzing for open source software"></a>Announcing OSS-Fuzz: Continuous fuzzing for open source software</h2><p><a href="https://opensource.googleblog.com/2016/12/announcing-oss-fuzz-continuous-fuzzing.html" target="_blank" rel="external">参考链接</a> </p>
+      <content type="html"><![CDATA[<h1 id="第一次调研"><a href="#第一次调研" class="headerlink" title="第一次调研"></a>第一次调研</h1><h2 id="OSS-Fuzz概况"><a href="#OSS-Fuzz概况" class="headerlink" title="OSS-Fuzz概况"></a>OSS-Fuzz概况</h2><p>OSS-Fuzz与<a href="https://www.coreinfrastructure.org/" target="_blank" rel="external">Core Infrastructure Initiative</a>合作，目标是希望利用模糊测试技术以及分布式执行技术使开源软件更加安全可靠。<br>在OSS-Fuzz的第一阶段，开发者使用了带有Sanitizer的LibFuzzer，目前OSS-Fuzz仅支持C和C++语言。  </p>
+<h3 id="Process-Overview"><a href="#Process-Overview" class="headerlink" title="Process Overview"></a>Process Overview</h3><p>OSS-Fuzz的整个流程如下：</p>
+<ul>
+<li>开源项目的维护这创建一个或多个fuzz target（也就是LibFuzzer中必须重载的LLVMFuzzerTestOneInput函数），并使用OSS-Fuzz项目中的创建及测试系统对它们进行<a href="https://github.com/google/oss-fuzz/blob/master/docs/ideal_integration.md" target="_blank" rel="external">整合</a>，构建出一个待测项目。</li>
+<li>OSS-Fuzz接收待测项目。</li>
+<li>当ClusterFuzz发现bug后，一个issue将在OSS-Fuzz的<a href="https://bugs.chromium.org/p/oss-fuzz/issues/list" target="_blank" rel="external">issue tracker</a>上面进行公布。Project owners are <strong>CC-ed</strong> to the bug report.</li>
+<li>维护者修复bug。</li>
+<li>ClusterFuzz自动确认已修复的bug，添加评注并关闭issue。</li>
+<li>修复的7天后将被verified，90天后将会公布出来。  </li>
+</ul>
+<h2 id="Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software"><a href="#Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software" class="headerlink" title="Announcing OSS-Fuzz: Continuous fuzzing for open source software"></a>Announcing OSS-Fuzz: Continuous fuzzing for open source software</h2><p><a href="https://opensource.googleblog.com/2016/12/announcing-oss-fuzz-continuous-fuzzing.html" target="_blank" rel="external">参考链接</a> </p>
 <blockquote>
 <p>In recent years, several efficient general purpose fuzzing engines have been implemented (e.g. AFL and libFuzzer), and we use them to fuzz various components of the Chrome browser. These fuzzers, when combined with <strong>Sanitizers</strong>, can help find <strong>security vulnerabilities</strong> (e.g. buffer overflows, use-after-free, bad casts, integer overflows, etc), <strong>stability bugs</strong> (e.g. null dereferences, memory leaks, out-of-memory, assertion failures, etc) and sometimes even <strong>logical bugs</strong>.  </p>
 </blockquote>
