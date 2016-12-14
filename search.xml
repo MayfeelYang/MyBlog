@@ -36,15 +36,17 @@
 <p><strong>基于以上几点，进行总结：fuzzer随机产生输入，无法通过程序对输入的一些检测；concolic execution虽然能通过输入检测，但由于路径爆炸的问题，影响其能分析的程序深度。所以隐藏在深层逻辑中的缺陷难以被发现。</strong>  </p>
 <p>考虑fuzzing和selective concolic execution结合。<br><strong>fuzzing —- within a compartment</strong><br><strong>selective concolic execution —-  between compartments</strong></p>
 <p><strong>so</strong>  </p>
-<p><strong><em>fuzzing</em></strong> -&gt; <strong>initial compartment</strong> -&gt; <strong><em>concolic</em></strong> -&gt; <strong>next compartment</strong> -&gt; <strong><em>fuzzing</em></strong> -&gt; <strong>new compartment</strong>  </p>
+<p><strong><em>fuzzing</em></strong> -&gt; <strong>initial compartment</strong> -&gt; <strong><em>concolic</em></strong> -&gt; <strong>next compartment</strong> -&gt; <strong><em>fuzzing</em></strong> -&gt; <strong>new compartment</strong>   </p>
 <h1 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a>Related Work</h1><hr>
 <ul>
 <li>Guided Fuzzing<ul>
 <li>Dowser</li>
 <li>BuzzFuzz</li>
-<li>Flayer<br>未完。。。。需继续阅读  </li>
+<li>Flayer</li>
 </ul>
 </li>
+<li>Whitebox Fuzzing</li>
+<li>Concolic Execution</li>
 </ul>
 <h1 id="Driller-Overview"><a href="#Driller-Overview" class="headerlink" title="Driller Overview"></a>Driller Overview</h1><p>Driller process two different classes of user input:</p>
 <ul>
@@ -56,10 +58,9 @@
 <li><strong>Input test cases</strong>: 可有可无，但是有输入用例，可以加速初始模糊测试的阶段，将目标指向某compartments。</li>
 <li><strong>fuzzing</strong>: 模糊测试引擎寻找第一个compartment，直到遇到第一个复杂的specific input的检查。fuzzing engine -&gt; “stuck”</li>
 <li><strong>concolic execution</strong>: 通过fuzzing模块生成的用例，追踪fuzzing模块已经到达的路径，本模块使用约束求解来发现未知路径，通过求解结果构造新的输入用例。</li>
-<li><strong>repeat</strong>:</li>
+<li><strong>repeat</strong></li>
 </ul>
-<p>【未完待续。。。】</p>
-]]></content>
+<h3 id="Example"><a href="#Example" class="headerlink" title="Example"></a>Example</h3>]]></content>
     </entry>
     
     <entry>
