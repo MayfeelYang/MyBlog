@@ -6,8 +6,18 @@
     <entry>
       <title><![CDATA[OSS-FUZZ相关调研]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2016/12/14/OSS-FUZZ%E7%9B%B8%E5%85%B3%E8%B0%83%E7%A0%94/</url>
-      <content type="html"><![CDATA[<p>…….</p>
-]]></content>
+      <content type="html"><![CDATA[<h1 id="Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software"><a href="#Announcing-OSS-Fuzz-Continuous-fuzzing-for-open-source-software" class="headerlink" title="Announcing OSS-Fuzz: Continuous fuzzing for open source software"></a>Announcing OSS-Fuzz: Continuous fuzzing for open source software</h1><p><a href="https://opensource.googleblog.com/2016/12/announcing-oss-fuzz-continuous-fuzzing.html" target="_blank" rel="external">参考链接</a> </p>
+<blockquote>
+<p>In recent years, several efficient general purpose fuzzing engines have been implemented (e.g. AFL and libFuzzer), and we use them to fuzz various components of the Chrome browser. These fuzzers, when combined with <strong>Sanitizers</strong>, can help find <strong>security vulnerabilities</strong> (e.g. buffer overflows, use-after-free, bad casts, integer overflows, etc), <strong>stability bugs</strong> (e.g. null dereferences, memory leaks, out-of-memory, assertion failures, etc) and sometimes even <strong>logical bugs</strong>.  </p>
+</blockquote>
+<p>文中说<a href="https://github.com/google/oss-fuzz" target="_blank" rel="external">OSS-Fuzz</a>将包含多种多样的模糊测试引擎（一开始是LibFuzzer），以及各种Sanitizers（一开始是AddressSanitizer），并且提供了一个由<a href="https://github.com/google/oss-fuzz/blob/master/docs/clusterfuzz.md" target="_blank" rel="external">ClusterFuzz</a>组成的大规模分布式执行环境。  </p>
+<p><mark><strong><em>这里简介一下ClusterFuzz：</em></strong></mark><br>ClusterFuzz是位于OSS-Fuzz的后端，一开始是为了规模化的测试Chrome用的。ClusterFuzz将提供（貌似开发工作正在进行中）一个web interface来查看目标程序的测试情况（如：速度、覆盖信息、内存使用情况、crash信息）。<br><img src="https://raw.githubusercontent.com/google/oss-fuzz/master/docs/images/freetype_stats.png" alt="fuzzer states">  </p>
+<p>提供的coverage报告会中还会高亮标记源代码中覆盖到的语句。<br><img src="https://raw.githubusercontent.com/google/oss-fuzz/master/docs/images/freetype_coverage_1.png" alt="coverage report 1">  </p>
+<p>高亮标记<br><img src="https://raw.githubusercontent.com/google/oss-fuzz/master/docs/images/freetype_coverage_2.png" alt="coverage report 2">  </p>
+<p>crash报告中，含有stack trace、导致crash的样本、bug有可能发生的位置等。<br><img src="https://raw.githubusercontent.com/google/oss-fuzz/master/docs/images/pcre2_testcase.png" alt="crash report"></p>
+<h2 id="Early-successes"><a href="#Early-successes" class="headerlink" title="Early successes"></a>Early successes</h2><p>这一部分讲述了开发者使用OSS-FUZZ得到了很好的结果，开发者的其中一个测试目标为<a href="https://www.freetype.org/" target="_blank" rel="external">FreeType</a>，开发者构建了一个<a href="http://git.savannah.gnu.org/cgit/freetype/freetype2.git/tree/src/tools/ftfuzzer/ftfuzzer.cc" target="_blank" rel="external">FreeTypeFuzzer</a>仅在源代码更新后的几个小时之内就发现了一个新的heap buffer overflow的漏洞。之后OSS-Fuzz通知相关的漏洞修补人员，最后OSS-Fuzz将自动的对修补后的结果进行确认。所有的过程在一天之内就完成了。  </p>
+<h2 id="Contributions"><a href="#Contributions" class="headerlink" title="Contributions"></a>Contributions</h2><p>OSS-Fuzz已经发现了150个<a href="https://bugs.chromium.org/p/oss-fuzz/issues/list?can=1&amp;q=-component%3AInfra+-status%3ADuplicate%2CWontFix&amp;sort=-id&amp;colspec=ID+Type+Component+Status+Library+Reported+Owner+Summary&amp;cells=ids" target="_blank" rel="external">bug</a>（每周能产生4万亿个测试用例）。  </p>
+<h1 id="。。。。。。继续跟踪调研中。。。。。。。"><a href="#。。。。。。继续跟踪调研中。。。。。。。" class="headerlink" title="。。。。。。继续跟踪调研中。。。。。。。"></a>。。。。。。继续跟踪调研中。。。。。。。</h1>]]></content>
     </entry>
     
     <entry>
