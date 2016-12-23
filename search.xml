@@ -4,9 +4,14 @@
   
     
     <entry>
-      <title><![CDATA[IDA学习笔记(1)]]></title>
+      <title></title>
       <url>http://mayfeelyang.github.io/MyBlog/2016/12/23/IDA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/</url>
-      <content type="html"><![CDATA[<h1 id="第一章-反汇编简介"><a href="#第一章-反汇编简介" class="headerlink" title="第一章 反汇编简介"></a>第一章 反汇编简介</h1><h2 id="何为反汇编"><a href="#何为反汇编" class="headerlink" title="何为反汇编"></a>何为反汇编</h2><p>使用一些工具来撤销汇编的过程。<br>为何反汇编困难重重：</p>
+      <content type="html"><![CDATA[<hr>
+<p>title: IDA学习笔记(1)<br>date: 2016-12-23 15:45:33<br>categories:  </p>
+<pre><code>- CTF相关  
+</code></pre><p>tags:  </p>
+<pre><code>- IDA 
+</code></pre><h2 id="toc-true"><a href="#toc-true" class="headerlink" title="toc: true"></a>toc: true</h2><h1 id="第一章-反汇编简介"><a href="#第一章-反汇编简介" class="headerlink" title="第一章 反汇编简介"></a>第一章 反汇编简介</h1><h2 id="何为反汇编"><a href="#何为反汇编" class="headerlink" title="何为反汇编"></a>何为反汇编</h2><p>使用一些工具来撤销汇编的过程。<br>为何反汇编困难重重：</p>
 <ul>
 <li>编译过程会造成损失。机器语言中没有变量或是函数名，变量类型信息只有通过数据的用途来确定。</li>
 <li>编译属于多对多的操作。源程序可以通过许多不同的方式被转换为汇编语言。因此，编译一个文件，并立即反编译，可能会得到与输入是截然不同的源文件。</li>
