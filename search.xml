@@ -64,7 +64,7 @@
 <h3 id="Build-support"><a href="#Build-support" class="headerlink" title="Build support"></a>Build support</h3><p>由于开源项目中有太多build体系存在。一个理想的能够很好的支持oss-fuzz是这样的：  </p>
 <ul>
 <li>项目中每个目标foo函数，都有对应的编译规则，一个项目包应该包含：模糊测试入口函数（LLVMFuzzerTestOneInput），以及所有依赖的代码。</li>
-<li>build系统应该支持更改编译器和增加compiler flags。如下：<br><code>CC=&quot;clang \$FUZZER\_FLAGS&quot; CXX=&quot;clang++ \$FUZZER\_FLAGS&quot; make\_or\_whatever\_other\_command foo\_fuzzer.a</code></li>
+<li>build系统应该支持更改编译器和增加compiler flags。如下：<br><code>CC=&quot;clang $FUZZER_FLAGS&quot; CXX=&quot;clang++ $FUZZER_FLAGS&quot; make_or_whatever_other_command foo_fuzzer.a</code></li>
 </ul>
 <h1 id="。。。。。。继续跟踪调研中。。。。。。。"><a href="#。。。。。。继续跟踪调研中。。。。。。。" class="headerlink" title="。。。。。。继续跟踪调研中。。。。。。。"></a>。。。。。。继续跟踪调研中。。。。。。。</h1>]]></content>
     </entry>
