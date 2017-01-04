@@ -131,6 +131,16 @@
 <h3 id="Debugging-Problems"><a href="#Debugging-Problems" class="headerlink" title="Debugging Problems"></a>Debugging Problems</h3><p>可以在<code>myfuzzer</code>的目录里面创建<code>my_fuzzer.options</code>文件来设置LibFuzzer的一些参数。<a href="http://llvm.org/docs/LibFuzzer.html#options" target="_blank" rel="external">List of available options</a></p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="section">[libfuzzer]</span></div><div class="line"><span class="attr">dict</span> = xml.dict</div><div class="line"><span class="attr">max_len</span> = <span class="number">1024</span></div></pre></td></tr></table></figure>
 <p><a href="https://github.com/google/oss-fuzz/blob/master/projects/boringssl/build.sh#L41" target="_blank" rel="external">创建种子集</a></p>
+<h2 id="Reproducing-OSS-Fuzz-issues"><a href="#Reproducing-OSS-Fuzz-issues" class="headerlink" title="Reproducing OSS-Fuzz issues"></a>Reproducing OSS-Fuzz issues</h2><ul>
+<li><p>reproduce issue<br>  不使用docker的方法：  </p>
+  <figure class="highlight xml"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./fuzz_target_binary <span class="tag">&lt;<span class="name">testcase_path</span>&gt;</span></div></pre></td></tr></table></figure>
+<p>  使用docker的方法：</p>
+  <figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">python</span> infra/helper.<span class="keyword">py</span> build_fuzzers $PROJECT_NAME <span class="symbol">&lt;source_path&gt;</span></div><div class="line"><span class="keyword">python</span> infra/helper.<span class="keyword">py</span> reproduce $PROJECT_NAME <span class="symbol">&lt;fuzzer_name&gt;</span> <span class="symbol">&lt;testcase_path&gt;</span></div></pre></td></tr></table></figure>
+</li>
+<li><p>Fix issue</p>
+</li>
+<li>Submit fix：ClusterFuzz自动确认。</li>
+</ul>
 <h1 id="。。。。。。继续跟踪调研中。。。。。。。"><a href="#。。。。。。继续跟踪调研中。。。。。。。" class="headerlink" title="。。。。。。继续跟踪调研中。。。。。。。"></a>。。。。。。继续跟踪调研中。。。。。。。</h1>]]></content>
     </entry>
     
