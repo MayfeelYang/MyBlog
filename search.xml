@@ -77,7 +77,146 @@
 <li>进行模糊测试（session.fuzz）</li>
 </ol>
 <h1 id="sulley的模糊测试流程"><a href="#sulley的模糊测试流程" class="headerlink" title="sulley的模糊测试流程"></a>sulley的模糊测试流程</h1><p>session类中<strong>fuzz()</strong>函数的实现。<br><u>@ param1: this_node (default = None)<br>    @ param2: path (default = [])<br></u><br><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870438262972.jpg" alt="模糊测试流程图"></p>
-<h1 id="sulley的变异"><a href="#sulley的变异" class="headerlink" title="sulley的变异"></a>sulley的变异</h1><h1 id="sulley的监控"><a href="#sulley的监控" class="headerlink" title="sulley的监控"></a>sulley的监控</h1><p><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870439095318.png" alt="监控pedrpc"></p>
+<h1 id="sulley的变异"><a href="#sulley的变异" class="headerlink" title="sulley的变异"></a>sulley的变异</h1><p>待补充。。。。。。。。<br><br\><br><br\></br\></br\></p>
+<h1 id="sulley的监控"><a href="#sulley的监控" class="headerlink" title="sulley的监控"></a>sulley的监控</h1><p>Agents组件来实现，现有的agent包括：</p>
+<ul>
+<li>network_monitor</li>
+<li>process_monitor</li>
+<li>vmcontrol    </li>
+</ul>
+<p>监控部分的脚本都引入了sulley中的<strong>pedrpc</strong>，客户端和服务器的通信就建立在其上，具体内容与实现如下图所示。<br><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870439095318.png" alt="pedrpc"></p>
+<h2 id="vmcontrol"><a href="#vmcontrol" class="headerlink" title="vmcontrol"></a>vmcontrol</h2><ul>
+<li>Exposes network API for VMWare instrumentation<ul>
+<li>Simple PedRPC wrapper around vmrun.exe</li>
+<li>Start, stop, suspend, snapshot, revert, etc…</li>
+</ul>
+</li>
+<li>Used to restore target health after a fault is induced</li>
+</ul>
+<p><strong>vmcontrol.py中实现了两个类：</strong></p>
+<ul>
+<li>vmcontrol_pedrpc_server: 继承了pedrpc.server</li>
+<li>vboxcontrol_pedrpc_server: 继承了vmcontrol_pedrpc_server</li>
+</ul>
+<h3 id="vmcontrol-pedrpc-server"><a href="#vmcontrol-pedrpc-server" class="headerlink" title="vmcontrol_pedrpc_server"></a>vmcontrol_pedrpc_server</h3><p>为了控制VMWare的虚拟机。<br>实例化该类是必须指定：    </p>
+<ul>
+<li>hostname/IP（host）</li>
+<li>port（port）</li>
+<li>vmrun.exe的路径（vmrun）</li>
+<li>vmx文件的路径（vmx）</li>
+</ul>
+<p>该类中有一个较为重要的函数 <strong>vmcommand</strong>，此函数用于执行指定的虚拟机命令，使用了<code>os.popen(command); out = pipe.realines()</code>进行实现，通过<code>out</code>的值来判断是否成功执行，如果执行失败将不断的再次尝试执行，直至成功。可以执行的命令有：</p>
+<ul>
+<li>delete_snapshot</li>
+<li>list 列出正在运行的镜像</li>
+<li>list_snapshots</li>
+<li>reset</li>
+<li>revert_to_snapshot</li>
+<li>snapshot</li>
+<li>start</li>
+<li>stop</li>
+<li>suspend</li>
+</ul>
+<p>通过对以上命令的调用，实现了一下函数：</p>
+<ul>
+<li>is_target_running<ol>
+<li>list</li>
+<li>判断list中是否有self.vmx，若有则返回True；否则，返回False</li>
+</ol>
+</li>
+<li>wait<ol>
+<li>无限循环，此循环的终止条件为：is_target_running()返回True</li>
+</ol>
+</li>
+<li>restart_target<ol>
+<li>revert_to_snapshot</li>
+<li>start</li>
+<li>wait</li>
+</ol>
+</li>
+</ul>
+<h3 id="vboxcontol-pedrpc-server"><a href="#vboxcontol-pedrpc-server" class="headerlink" title="vboxcontol_pedrpc_server"></a>vboxcontol_pedrpc_server</h3><p>为了控制Oracle的VirtualBox虚拟机。<br>实例化该类是必须指定：    </p>
+<ul>
+<li>hostname/IP（host）</li>
+<li>port（port）</li>
+<li>VBoxManage的路径（vmrun）</li>
+<li>需要控制的VirtualBox虚拟机的名字（vmx）</li>
+</ul>
+<p>可以执行的命令较VMWare<strong>多了</strong>以下几个：</p>
+<ul>
+<li>pause</li>
+<li>resume</li>
+</ul>
+<p>同样，还实现了下列函数：</p>
+<ul>
+<li>get_vminfo</li>
+<li>is_target_running</li>
+<li>is_target_paused</li>
+</ul>
+<h2 id="process-monitor"><a href="#process-monitor" class="headerlink" title="process_monitor"></a>process_monitor</h2><ul>
+<li>PyDbg based fault monitoring engine</li>
+<li>Used to monitor target health</li>
+<li>Detected faults are catalogued in a “crash bin”<ul>
+<li>Allows for simplistic (backtrace driven) fault clustering</li>
+<li>More on this later</li>
+</ul>
+</li>
+</ul>
+<p>process_monitor中实现了两个类：</p>
+<ul>
+<li>DebuggerThread</li>
+<li>ProcessMonitorPedrpcServer</li>
+</ul>
+<h3 id="DebuggerThread"><a href="#DebuggerThread" class="headerlink" title="DebuggerThread"></a>DebuggerThread</h3><p>继承了threading.Thread类。<br>实例化是必须指定的参数是：</p>
+<ul>
+<li>process_monitor =&gt; self.process_monitor</li>
+<li>process =&gt; self.process_name</li>
+</ul>
+<p>实现了以下几个函数：</p>
+<ul>
+<li><strong><strong>init</strong></strong>: Instantiate a new PyDbg instance and register user and access violation callbacks. 使用了pydbg.pydbg()初始化了pydbg的实例。</li>
+<li><strong>dbg_callback_access_violation</strong>: Ignore first chance exceptions. Record all unhandled exceptions to the process monitor crash bin and kill the target process. 当监控目标出现异常时调用此回调函数。</li>
+<li><strong>dbg_callback_user</strong>: The user callback is run roughly every 100 milliseconds (WaitForDebugEvent() timeout from pydbg_core.py). Simply check if the active flag was lowered and if so detach from the target process. The thread should then exit. 监控用户的指令，如果用户要求停止监控，则detach监控进程。</li>
+<li><strong>run</strong>: Main thread routine, called on thread.start(). Thread exits when this routine returns.<br>  <code>self.watch(); self.dbg.attach(self.pid); self.dbg.run()</code></li>
+<li><strong>watch</strong>: Continuously loop, watching for the target process. This routine “blocks” until the target process is found. Update self.pid when found and return. 如果当前的self.pid为空，则调用pydbg的enumerate_processes函数，通过比对当前的self.proc_name来找到进程号。</li>
+</ul>
+<h3 id="ProcessMonitorPedrpcServer"><a href="#ProcessMonitorPedrpcServer" class="headerlink" title="ProcessMonitorPedrpcServer"></a>ProcessMonitorPedrpcServer</h3><p>继承了pedrpc.server。<br>实例化必须指定的参数有：</p>
+<ul>
+<li>hostname/IP</li>
+<li>port</li>
+<li>crash_filename: Name of file to (un)serialize crash bin to/from</li>
+<li>还有个proc参数，默认值为None，但是这个参数应该是必须指定的，否则应该无法正常工作吧~</li>
+</ul>
+<p>实现的几个重要的函数如下：</p>
+<ul>
+<li><strong>pre_send()</strong>: This routine is called before the fuzzer transmits a test case and ensure the debugger thread is operational.<ul>
+<li>参数：test_number(Integer)【Test number to retrieve PCAP for.】</li>
+<li><code>self.crash_bin.import_file(self.crash_filename)</code></li>
+</ul>
+</li>
+<li><p><strong>post_send()</strong>: This routine is called after the fuzzer transmits a test case and returns the status of the target.</p>
+<ul>
+<li>判断当前dbg是否处于access violation，若是，则等待其完成</li>
+<li><code>self.crash_bin.export_file(self.crash_filename)</code></li>
+<li><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">for</span> binary, crash_list <span class="keyword">in</span> self.crash_bin.bins.iteritems():</div><div class="line">	crashes += len(crash_list)</div></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>start_target</strong>: Start up the target process by issuing the commands in self.start_commands.</p>
+<ul>
+<li><code>subprocess.Popen(command)</code>，<code>command</code>是<code>self.start_commands</code>中的。</li>
+</ul>
+</li>
+<li><strong>stop_target</strong>: Kill the current debugger thread and stop the target process by issuing the commands in self.stop_commands.<ul>
+<li>使用了<code>os.system(command)</code>    </li>
+</ul>
+</li>
+</ul>
+<h2 id="network-monitor"><a href="#network-monitor" class="headerlink" title="network_monitor"></a>network_monitor</h2><ul>
+<li>Monitors network traffic and saves PCAPs to disk</li>
+<li>Per test case <strong>bi-directional</strong> packet capture</li>
+</ul>
+<p>未完成。。。。</p>
 ]]></content>
     </entry>
     
