@@ -6,7 +6,7 @@
     <entry>
       <title><![CDATA[sulley的架构]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/02/14/Fuzz/sulley%E7%9A%84%E6%9E%B6%E6%9E%84/</url>
-      <content type="html"><![CDATA[<h1 id="sulley架构图"><a href="#sulley架构图" class="headerlink" title="sulley架构图"></a>sulley架构图</h1><p><img src="file:///Users/Mayfeel/MyBlog/source/_posts/Fuzz/media/14870374558193.jpg" alt="整体结构图"></p>
+      <content type="html"><![CDATA[<h1 id="sulley架构图"><a href="#sulley架构图" class="headerlink" title="sulley架构图"></a>sulley架构图</h1><p><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870374558193.jpg" alt="整体结构图"></p>
 <h2 id="四个主要组成部分"><a href="#四个主要组成部分" class="headerlink" title="四个主要组成部分"></a>四个主要组成部分</h2><ul>
 <li><strong>Data Generation</strong><ul>
 <li>You build requests out of primitives and legos</li>
@@ -83,8 +83,8 @@
     
     <entry>
       <title><![CDATA[几种常见模式识别算法的整理和总结]]></title>
-      <url>http://mayfeelyang.github.io/MyBlog/2017/01/11/%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%BC%8F%E8%AF%86%E5%88%AB%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B4%E7%90%86%E5%92%8C%E6%80%BB%E7%BB%93/</url>
-      <content type="html"><![CDATA[<h1 id="1-K-Nearest-Neighbor"><a href="#1-K-Nearest-Neighbor" class="headerlink" title="1.K-Nearest Neighbor"></a>1.K-Nearest Neighbor</h1><p>K-NN可以说是一种最直接的用来分类未知数据的方法。基本通过下面这张图跟文字说明就可以明白K-NN是干什么的<br><img src="file:///Users/Mayfeel/MyBlog/source/_posts/pic/h.png" alt="k-nn"><br>简单来说，K-NN可以看成：有那么一堆你已经知道分类的数据，然后当一个新数据进入的时候，就开始跟训练数据里的每个点求距离，然后挑离这个训练数据最近的K个点看看这几个点属于什么类型，然后用少数服从多数的原则，给新数据归类。一个比较好的介绍k-NN的课件可以见下面链接，图文并茂，我当时一看就懂了<br><a href="http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf" target="_blank" rel="external">http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf</a></p>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/01/11/PatternRecognition&MachineLearning/%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%BC%8F%E8%AF%86%E5%88%AB%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B4%E7%90%86%E5%92%8C%E6%80%BB%E7%BB%93/</url>
+      <content type="html"><![CDATA[<h1 id="1-K-Nearest-Neighbor"><a href="#1-K-Nearest-Neighbor" class="headerlink" title="1.K-Nearest Neighbor"></a>1.K-Nearest Neighbor</h1><p>K-NN可以说是一种最直接的用来分类未知数据的方法。基本通过下面这张图跟文字说明就可以明白K-NN是干什么的<br><img src="/MyBlog/2017/01/11/PatternRecognition&MachineLearning/几种常见模式识别算法的整理和总结/h.png" alt="k-nn"><br>简单来说，K-NN可以看成：有那么一堆你已经知道分类的数据，然后当一个新数据进入的时候，就开始跟训练数据里的每个点求距离，然后挑离这个训练数据最近的K个点看看这几个点属于什么类型，然后用少数服从多数的原则，给新数据归类。一个比较好的介绍k-NN的课件可以见下面链接，图文并茂，我当时一看就懂了<br><a href="http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf" target="_blank" rel="external">http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf</a></p>
 <p>实际上K-NN本身的运算量是相当大的，因为数据的维数往往不止2维，而且训练数据库越大，所求的样本间距离就越多。就拿我们course project的人脸检测来说，输入向量的维数是1024维(32x32的图，当然我觉得这种方法比较silly)，训练数据有上千个，所以每次求距离(这里用的是欧式距离，就是我们最常用的平方和开根号求距法) 这样每个点的归类都要花上上百万次的计算。所以现在比较常用的一种方法就是kd-tree。也就是把整个输入空间划分成很多很多小子区域，然后根据临近的原则把它们组织为树形结构。然后搜索最近K个点的时候就不用全盘比较而只要比较临近几个子区域的训练数据就行了。kd-tree的一个比较好的课件可以见下面链接：<br><a href="https://www.cise.ufl.edu/class/cot5520fa09/CG_RangeKDtrees.pdf" target="_blank" rel="external">https://www.cise.ufl.edu/class/cot5520fa09/CG_RangeKDtrees.pdf</a></p>
 <p>当然，kd-tree有一个问题就是当输入维数跟训练数据数量很接近时就很难优化了。所以用PCA(稍后会介绍)降维大多数情况下是很有必要的</p>
 <h1 id="2-Bayes-Classifier"><a href="#2-Bayes-Classifier" class="headerlink" title="2.Bayes Classifier"></a>2.Bayes Classifier</h1><p>贝叶斯方法一篇比较科普的中文介绍可以见pongba的平凡而神奇的贝叶斯方法: <mark><a href="http://mindhacks.cn/2008/09/21/the-magical-bayesian-method" target="_blank" rel="external">http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/</a></mark>，实际实现一个贝叶斯分类器之后再回头看这篇文章，感觉就很不一样。  </p>
@@ -96,7 +96,7 @@
 <p>那么如何求出这个长轴和短轴呢？于是线性代数就来了：我们求出这堆数据的协方差矩阵(关于什么是协方差矩阵，详见本节最后附的链接)，然后再求出这个协方差矩阵的特征值和特征向量，对应最大特征值的那个特征向量的方向就是长轴(也就是主元)的方向，次大特征值的就是第二主元的方向，以此类推。</p>
 <p>关于PCA，推荐两个不错的tutorial:<br>(1) A tutorial on Principle Component Analysis从最基本的数学原理到应用都有，让我在被老师的讲课弄晕之后瞬间开悟的tutorial:<a href="http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf" target="_blank" rel="external">http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf</a><br>(2) 里面有一个很生动的实现PCA的例子，还有告诉你PCA跟SVD是什么关系的，对编程实现的帮助很大(当然大多数情况下都不用自己编了):<a href="http://www.math.ucsd.edu/~gptesler/283/pca_07-handout.pdf" target="_blank" rel="external">http://www.math.ucsd.edu/~gptesler/283/pca_07-handout.pdf</a>(不能使用)</p>
 <h1 id="4-Linear-Discriminant-Analysis"><a href="#4-Linear-Discriminant-Analysis" class="headerlink" title="4.Linear Discriminant Analysis"></a>4.Linear Discriminant Analysis</h1><p>LDA，基本和PCA是一对双生子，它们之间的区别就是PCA是一种unsupervised的映射方法而LDA是一种supervised映射方法，这一点可以从下图中一个2D的例子简单看出</p>
-<p><img src="file:///Users/Mayfeel/MyBlog/source/_posts/pic/114542_1292688413RtUs.png" alt="lda"></p>
+<p><img src="/MyBlog/2017/01/11/PatternRecognition&MachineLearning/几种常见模式识别算法的整理和总结/114542_1292688413RtUs.png" alt="lda"></p>
 <p>图的左边是PCA，它所作的只是将整组数据整体映射到最方便表示这组数据的坐标轴上，映射时没有利用任何数据内部的分类信息。因此，虽然做了PCA后，整组数据在表示上更加方便(降低了维数并将信息损失降到最低)，但在分类上也许会变得更加困难；图的右边是LDA，可以明显看出，在增加了分类信息之后，两组输入映射到了另外一个坐标轴上，有了这样一个映射，两组数据之间的就变得更易区分了(在低维上就可以区分，减少了很大的运算量)。</p>
 <p>在实际应用中，最常用的一种LDA方法叫作Fisher Linear Discriminant，其简要原理就是求取一个线性变换，是的样本数据中“between classes scatter matrix”(不同类数据间的协方差矩阵)和“within classes scatter matrix”(同一类数据内部的各个数据间协方差矩阵)之比的达到最大。关于Fisher LDA更具体的内容可以见下面课件，写的很不错~</p>
 <p><a href="http://www.csd.uwo.ca/~olga/Courses//CS434a_541a//Lecture8.pdf" target="_blank" rel="external">http://www.csd.uwo.ca/~olga/Courses//CS434a_541a//Lecture8.pdf</a> </p>
