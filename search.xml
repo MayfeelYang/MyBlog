@@ -6,7 +6,7 @@
     <entry>
       <title><![CDATA[sulley的架构]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/02/14/sulley%E7%9A%84%E6%9E%B6%E6%9E%84/</url>
-      <content type="html"><![CDATA[<h1 id="sulley架构图"><a href="#sulley架构图" class="headerlink" title="sulley架构图"></a>sulley架构图</h1><p><img src="file://media/14870374558193.jpg" alt="整体结构图"></p>
+      <content type="html"><![CDATA[<h1 id="sulley架构图"><a href="#sulley架构图" class="headerlink" title="sulley架构图"></a>sulley架构图</h1><p><img src="file:///Users/Mayfeel/MyBlog/source/_posts/media/14870374558193.jpg" alt="整体结构图"></p>
 <h2 id="四个主要组成部分"><a href="#四个主要组成部分" class="headerlink" title="四个主要组成部分"></a>四个主要组成部分</h2><ul>
 <li><strong>Data Generation</strong><ul>
 <li>You build requests out of primitives and legos</li>
