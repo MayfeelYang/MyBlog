@@ -4,6 +4,108 @@
   
     
     <entry>
+      <title><![CDATA[sulley的架构]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/02/14/sulley%E7%9A%84%E6%9E%B6%E6%9E%84/</url>
+      <content type="html"><![CDATA[<p>#sulley架构图<br><img src="media/14870374558193.jpg" alt="整体结构图"></p>
+<h2 id="四个主要组成部分"><a href="#四个主要组成部分" class="headerlink" title="四个主要组成部分"></a>四个主要组成部分</h2><ul>
+<li><strong>Data Generation</strong><ul>
+<li>You build requests out of primitives and legos</li>
+<li>Legos are complex types that extend the framework</li>
+</ul>
+</li>
+<li><strong>Session Management / Driver</strong><ul>
+<li>Requests are chained together in a graph to form a session</li>
+<li>The session class exposes a standalone web interface for monitoring and control</li>
+<li>The driver ties targets, agents and requests together</li>
+</ul>
+</li>
+<li><strong>Agents</strong><ul>
+<li>Interface with the target for instrumentation and logging purposes</li>
+</ul>
+</li>
+<li><strong>Utilities</strong><ul>
+<li>Standalone command line utilities that perform a variety of task</li>
+</ul>
+</li>
+</ul>
+<h2 id="常规用法"><a href="#常规用法" class="headerlink" title="常规用法"></a>常规用法</h2><ol>
+<li>Sniff some traffic or reverse some protocol parsing binary</li>
+<li>Break the target protocol into individual requests</li>
+<li>Represent each request with a series of primitives<ul>
+<li>Individual requests can be tasked out to different people</li>
+</ul>
+</li>
+<li>Setup some targets in conjunction with various agents</li>
+<li>Write a driver script which instantiates a session and ties requests, agents and the targets together</li>
+<li>Fuzz!</li>
+<li>Review results</li>
+</ol>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>这个例展示了多种路径和深度。<br><img src="media/14870382907344.jpg" alt="session示意图"></p>
+<h2 id="Agents"><a href="#Agents" class="headerlink" title="Agents"></a>Agents</h2><ul>
+<li>A flexible sub-system allows you to create custom agents</li>
+<li>Client-server communication is extremely simple over ”PedRPC”<ul>
+<li>Create a class that extend from pedrpc.server</li>
+<li>Instantiate pedrpc.client</li>
+<li>Call class members as if they are local</li>
+</ul>
+</li>
+<li>Some agents have already been developed…</li>
+</ul>
+<h2 id="Driver"><a href="#Driver" class="headerlink" title="Driver"></a>Driver</h2><ul>
+<li>The driver is where it all comes together:<ul>
+<li>Import requests from the request library</li>
+<li>Instantiate a session instance</li>
+<li>Instantiate and add target instances to the session</li>
+<li>Interconnect the requests to form a graph</li>
+<li>Start fuzzing</li>
+</ul>
+</li>
+<li>This is where edge and pre/post send callbacks should be defined</li>
+<li>The driver is entirely free form, though must of them will follow a simple and similar structure</li>
+</ul>
+<p><strong>Driver的例子</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">from</span> sulley <span class="keyword">import</span> *</div><div class="line"><span class="keyword">from</span> requests <span class="keyword">import</span> jabber</div><div class="line"></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">init_message</span> <span class="params">(sock)</span>:</span></div><div class="line">	init = <span class="string">'&lt;?xml version="1.0" encoding="UTF-8" ?&gt;\n'</span></div><div class="line">	init += <span class="string">'&lt;stream:stream to="10.10.20.16" xmlns="jabber:client" xmlns:stream="http://etherx.jabber.org"&gt;'</span></div><div class="line">	sock.send(init)</div><div class="line">	sock.recv(<span class="number">1024</span>)</div><div class="line"></div><div class="line">sess = sessions.session(session filename=<span class="string">"audits/trillian.session"</span>)</div><div class="line">target = sessions.target(<span class="string">"10.10.20.16"</span>, <span class="number">5298</span>)</div><div class="line">target.netmon = pedrpc.client(<span class="string">"10.10.20.16"</span>, <span class="number">26001</span>)</div><div class="line">target.procmon = pedrpc.client(<span class="string">"10.10.20.16"</span>, <span class="number">26002</span>)</div><div class="line">target.vmcontrol = pedrpc.client(<span class="string">"127.0.0.1"</span>, <span class="number">26003</span>)</div><div class="line"></div><div class="line"><span class="comment"># start up the target.</span></div><div class="line">target.vmcontrol.restart_target()</div><div class="line"><span class="keyword">print</span> <span class="string">"virtual machine up and running"</span></div><div class="line">sess.add_target(target)</div><div class="line">sess.pre_send = init_message</div><div class="line">sess.connect(s_get(<span class="string">"chat message"</span>))</div><div class="line">sess.fuzz()</div></pre></td></tr></table></figure>
+<p>如上所示的<strong>driver的例子</strong>就可以展示一个大概的sulley的工作流程：</p>
+<ol>
+<li>初始化一个session</li>
+<li>初始化一个target</li>
+<li>为target设置监控（netmon / procmon / vmcontrol）</li>
+<li>启动target</li>
+<li>将target添加至session</li>
+<li>用户可自定义pre_send函数和post_send函数</li>
+<li>session.connect</li>
+<li>进行模糊测试（session.fuzz）</li>
+</ol>
+<h1 id="sulley的模糊测试流程"><a href="#sulley的模糊测试流程" class="headerlink" title="sulley的模糊测试流程"></a>sulley的模糊测试流程</h1><p>session类中<strong>fuzz()</strong>函数的实现。<br><u>@ param1: this_node (default = None)<br>    @ param2: path (default = [])<br></u><br><img src="media/14870438262972.jpg" alt="模糊测试流程图"></p>
+<h1 id="sulley的变异"><a href="#sulley的变异" class="headerlink" title="sulley的变异"></a>sulley的变异</h1><h1 id="sulley的监控"><a href="#sulley的监控" class="headerlink" title="sulley的监控"></a>sulley的监控</h1><p><img src="media/14870439095318.png" alt="监控pedrpc"></p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[几种常见模式识别算法的整理和总结]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/01/11/%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%BC%8F%E8%AF%86%E5%88%AB%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B4%E7%90%86%E5%92%8C%E6%80%BB%E7%BB%93/</url>
+      <content type="html"><![CDATA[<h1 id="1-K-Nearest-Neighbor"><a href="#1-K-Nearest-Neighbor" class="headerlink" title="1.K-Nearest Neighbor"></a>1.K-Nearest Neighbor</h1><p>K-NN可以说是一种最直接的用来分类未知数据的方法。基本通过下面这张图跟文字说明就可以明白K-NN是干什么的<br><img src="file:///Users/Mayfeel/MyBlog/source/_posts/pic/h.png" alt="k-nn"><br>简单来说，K-NN可以看成：有那么一堆你已经知道分类的数据，然后当一个新数据进入的时候，就开始跟训练数据里的每个点求距离，然后挑离这个训练数据最近的K个点看看这几个点属于什么类型，然后用少数服从多数的原则，给新数据归类。一个比较好的介绍k-NN的课件可以见下面链接，图文并茂，我当时一看就懂了<br><a href="http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf" target="_blank" rel="external">http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf</a></p>
+<p>实际上K-NN本身的运算量是相当大的，因为数据的维数往往不止2维，而且训练数据库越大，所求的样本间距离就越多。就拿我们course project的人脸检测来说，输入向量的维数是1024维(32x32的图，当然我觉得这种方法比较silly)，训练数据有上千个，所以每次求距离(这里用的是欧式距离，就是我们最常用的平方和开根号求距法) 这样每个点的归类都要花上上百万次的计算。所以现在比较常用的一种方法就是kd-tree。也就是把整个输入空间划分成很多很多小子区域，然后根据临近的原则把它们组织为树形结构。然后搜索最近K个点的时候就不用全盘比较而只要比较临近几个子区域的训练数据就行了。kd-tree的一个比较好的课件可以见下面链接：<br><a href="https://www.cise.ufl.edu/class/cot5520fa09/CG_RangeKDtrees.pdf" target="_blank" rel="external">https://www.cise.ufl.edu/class/cot5520fa09/CG_RangeKDtrees.pdf</a></p>
+<p>当然，kd-tree有一个问题就是当输入维数跟训练数据数量很接近时就很难优化了。所以用PCA(稍后会介绍)降维大多数情况下是很有必要的</p>
+<h1 id="2-Bayes-Classifier"><a href="#2-Bayes-Classifier" class="headerlink" title="2.Bayes Classifier"></a>2.Bayes Classifier</h1><p>贝叶斯方法一篇比较科普的中文介绍可以见pongba的平凡而神奇的贝叶斯方法: <mark><a href="http://mindhacks.cn/2008/09/21/the-magical-bayesian-method" target="_blank" rel="external">http://mindhacks.cn/2008/09/21/the-magical-bayesian-method/</a></mark>，实际实现一个贝叶斯分类器之后再回头看这篇文章，感觉就很不一样。  </p>
+<p>在模式识别的实际应用中，贝叶斯方法绝非就是post正比于prior*likelihood这个公式这么简单，一般而言我们都会用正态分布拟合likelihood来实现。  </p>
+<p>用正态分布拟合是什么意思呢？贝叶斯方法式子的右边有两个量，一个是prior先验概率，这个求起来很简单，就是一大堆数据中求某一类数据占的百分比就可以了，比如300个一堆的数据中A类数据占100个，那么A的先验概率就是1/3。第二个就是likelihood，likelihood可以这么理解：对于每一类的训练数据，我们都用一个multivariate正态分布来拟合它们(即通过求得某一分类训练数据的平均值和协方差矩阵来拟合出一个正态分布)，然后当进入一个新的测试数据之后，就分别求取这个数据点在每个类别的正态分布中的大小，然后用这个值乘以原先的prior便是所要求得的后验概率post了。  </p>
+<p>贝叶斯公式中还有一个evidence，对于初学者来说，可能会一下没法理解为什么在实际运算中它不见了。实则上，evidence只是一个让最后post归一化的东西，而在模式分类中，我们只需要比较不同类别间post的大小，归一化反而增加了它的运算量。当然，在有的地方，这个evidence绝对不能省，比如后文提到的GMM中，需要用到EM迭代，这时候如果不用evidence将post归一化，后果就会很可怕。<br>Bayes方法一个不错的参考网页可见下面链接：<br><a href="http://www.cs.mcgill.ca/~mcleish/644/main.html" target="_blank" rel="external">http://www.cs.mcgill.ca/~mcleish/644/main.html</a></p>
+<h1 id="3-Principle-Component-Analysis"><a href="#3-Principle-Component-Analysis" class="headerlink" title="3.Principle Component Analysis"></a>3.Principle Component Analysis</h1><p>PCA，译为主元分析或者主成份分析，是一种很好的简化数据的方法，也是PR中常见到不能再常见的算法之一。CSDN上有一篇很不错的中文博客介绍PCA，《主元分析(PCA)理论分析及应用》，可以见下面链接：<br><a href="http://blog.csdn.net/ayw_hehe/archive/2010/07/16/5736659.aspx" target="_blank" rel="external">http://blog.csdn.net/ayw_hehe/archive/2010/07/16/5736659.aspx</a><br>对于我而言，主元分析最大的意义就是让我明白了线性代数中特征值跟特征向量究竟代表什么，从而让我进一步感受到了线性代数的博大精深魅力无穷。- -|||</p>
+<p>PCA简而言之就是根据输入数据的分布给输入数据重新找到更能描述这组数据的正交的坐标轴，比如对于那个椭圆状的分布，最方便表示这个分布的坐标轴肯定是椭圆的长轴短轴而不是原来的x y。</p>
+<p>那么如何求出这个长轴和短轴呢？于是线性代数就来了：我们求出这堆数据的协方差矩阵(关于什么是协方差矩阵，详见本节最后附的链接)，然后再求出这个协方差矩阵的特征值和特征向量，对应最大特征值的那个特征向量的方向就是长轴(也就是主元)的方向，次大特征值的就是第二主元的方向，以此类推。</p>
+<p>关于PCA，推荐两个不错的tutorial:<br>(1) A tutorial on Principle Component Analysis从最基本的数学原理到应用都有，让我在被老师的讲课弄晕之后瞬间开悟的tutorial:<a href="http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf" target="_blank" rel="external">http://www.cs.otago.ac.nz/cosc453/student_tutorials/principal_components.pdf</a><br>(2) 里面有一个很生动的实现PCA的例子，还有告诉你PCA跟SVD是什么关系的，对编程实现的帮助很大(当然大多数情况下都不用自己编了):<a href="http://www.math.ucsd.edu/~gptesler/283/pca_07-handout.pdf" target="_blank" rel="external">http://www.math.ucsd.edu/~gptesler/283/pca_07-handout.pdf</a>(不能使用)</p>
+<h1 id="4-Linear-Discriminant-Analysis"><a href="#4-Linear-Discriminant-Analysis" class="headerlink" title="4.Linear Discriminant Analysis"></a>4.Linear Discriminant Analysis</h1><p>LDA，基本和PCA是一对双生子，它们之间的区别就是PCA是一种unsupervised的映射方法而LDA是一种supervised映射方法，这一点可以从下图中一个2D的例子简单看出</p>
+<p><img src="file:///Users/Mayfeel/MyBlog/source/_posts/pic/114542_1292688413RtUs.png" alt="lda"></p>
+<p>图的左边是PCA，它所作的只是将整组数据整体映射到最方便表示这组数据的坐标轴上，映射时没有利用任何数据内部的分类信息。因此，虽然做了PCA后，整组数据在表示上更加方便(降低了维数并将信息损失降到最低)，但在分类上也许会变得更加困难；图的右边是LDA，可以明显看出，在增加了分类信息之后，两组输入映射到了另外一个坐标轴上，有了这样一个映射，两组数据之间的就变得更易区分了(在低维上就可以区分，减少了很大的运算量)。</p>
+<p>在实际应用中，最常用的一种LDA方法叫作Fisher Linear Discriminant，其简要原理就是求取一个线性变换，是的样本数据中“between classes scatter matrix”(不同类数据间的协方差矩阵)和“within classes scatter matrix”(同一类数据内部的各个数据间协方差矩阵)之比的达到最大。关于Fisher LDA更具体的内容可以见下面课件，写的很不错~</p>
+<p><a href="http://www.csd.uwo.ca/~olga/Courses//CS434a_541a//Lecture8.pdf" target="_blank" rel="external">http://www.csd.uwo.ca/~olga/Courses//CS434a_541a//Lecture8.pdf</a> </p>
+<p><br \=""><br><br \=""><br><br \=""><br><br \=""></p>
+<p>转自<a href="http://blog.csdn.net/scyscyao/article/details/5987581" target="_blank" rel="external">http://blog.csdn.net/scyscyao/article/details/5987581</a></p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[IDA学习笔记(1)]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2016/12/23/IDA%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0-1/</url>
       <content type="html"><![CDATA[<h1 id="第一章-反汇编简介"><a href="#第一章-反汇编简介" class="headerlink" title="第一章 反汇编简介"></a>第一章 反汇编简介</h1><h2 id="何为反汇编"><a href="#何为反汇编" class="headerlink" title="何为反汇编"></a>何为反汇编</h2><p>使用一些工具来撤销汇编的过程。<br>为何反汇编困难重重：</p>
@@ -284,7 +386,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#97;&#x69;&#x6c;&#x74;&#111;&#58;&#x68;&#x75;&#x73;&#116;&#103;&#111;&#x63;&#x6b;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#x2e;&#99;&#111;&#x6d;">&#x68;&#x75;&#x73;&#116;&#103;&#111;&#x63;&#x6b;&#x40;&#103;&#109;&#97;&#x69;&#x6c;&#x2e;&#99;&#111;&#x6d;</a></li>
+<li>邮箱：<a href="&#109;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x68;&#x75;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#x68;&#x75;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
