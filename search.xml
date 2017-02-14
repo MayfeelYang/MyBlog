@@ -40,7 +40,7 @@
 <li>Fuzz!</li>
 <li>Review results</li>
 </ol>
-<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>这个例展示了多种路径和深度。<br><img src="media/14870382907344.jpg" alt="session示意图"></p>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>这个例展示了多种路径和深度。<br><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870382907344.jpg" alt="session示意图"></p>
 <h2 id="Agents"><a href="#Agents" class="headerlink" title="Agents"></a>Agents</h2><ul>
 <li>A flexible sub-system allows you to create custom agents</li>
 <li>Client-server communication is extremely simple over ”PedRPC”<ul>
@@ -76,8 +76,8 @@
 <li>session.connect</li>
 <li>进行模糊测试（session.fuzz）</li>
 </ol>
-<h1 id="sulley的模糊测试流程"><a href="#sulley的模糊测试流程" class="headerlink" title="sulley的模糊测试流程"></a>sulley的模糊测试流程</h1><p>session类中<strong>fuzz()</strong>函数的实现。<br><u>@ param1: this_node (default = None)<br>    @ param2: path (default = [])<br></u><br><img src="media/14870438262972.jpg" alt="模糊测试流程图"></p>
-<h1 id="sulley的变异"><a href="#sulley的变异" class="headerlink" title="sulley的变异"></a>sulley的变异</h1><h1 id="sulley的监控"><a href="#sulley的监控" class="headerlink" title="sulley的监控"></a>sulley的监控</h1><p><img src="media/14870439095318.png" alt="监控pedrpc"></p>
+<h1 id="sulley的模糊测试流程"><a href="#sulley的模糊测试流程" class="headerlink" title="sulley的模糊测试流程"></a>sulley的模糊测试流程</h1><p>session类中<strong>fuzz()</strong>函数的实现。<br><u>@ param1: this_node (default = None)<br>    @ param2: path (default = [])<br></u><br><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870438262972.jpg" alt="模糊测试流程图"></p>
+<h1 id="sulley的变异"><a href="#sulley的变异" class="headerlink" title="sulley的变异"></a>sulley的变异</h1><h1 id="sulley的监控"><a href="#sulley的监控" class="headerlink" title="sulley的监控"></a>sulley的监控</h1><p><img src="/MyBlog/2017/02/14/Fuzz/sulley的架构/14870439095318.png" alt="监控pedrpc"></p>
 ]]></content>
     </entry>
     
@@ -386,7 +386,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#x61;&#105;&#108;&#116;&#x6f;&#x3a;&#x68;&#x75;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#x68;&#x75;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#x40;&#x67;&#109;&#x61;&#105;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></li>
+<li>邮箱：<a href="&#x6d;&#x61;&#x69;&#x6c;&#116;&#111;&#58;&#104;&#x75;&#115;&#116;&#103;&#111;&#99;&#x6b;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#99;&#x6f;&#x6d;">&#104;&#x75;&#115;&#116;&#103;&#111;&#99;&#x6b;&#64;&#103;&#x6d;&#97;&#x69;&#108;&#46;&#99;&#x6f;&#x6d;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
