@@ -230,7 +230,56 @@
 <li>Monitors network traffic and saves PCAPs to disk</li>
 <li>Per test case <strong>bi-directional</strong> packet capture</li>
 </ul>
-<p>未完成。。。。</p>
+<p>该脚本引入了sulley的pedrpc，还引入了pcapy，实现了以下两个类：</p>
+<ul>
+<li>PcapThread</li>
+<li>NetworkMonitorPedrpcServer</li>
+</ul>
+<h3 id="PcapThread"><a href="#PcapThread" class="headerlink" title="PcapThread"></a>PcapThread</h3><p>实例化该类时必须指定的参数有：</p>
+<ul>
+<li>network_monitor =&gt; self.network_monitor</li>
+<li>pcap =&gt; self.pcap</li>
+<li>pcap_save_path =&gt; 用于<code>self.pcap.dump_open(pcap_save_path)</code></li>
+</ul>
+<p>在<code>__init__</code>函数中还注册了<code>self.decoder</code>，初始化了<code>self.data_bytes = 0</code>，<code>self.active = True</code>。</p>
+<p>实现了以下几个函数：</p>
+<ul>
+<li><strong>packet_handler</strong>: <ol>
+<li>将捕获的数据添加到PCAP中。<code>self.dumper.dump(header, data)</code></li>
+<li>根据捕获的数据长度，增加<code>self.data_bytes</code>的值</li>
+</ol>
+</li>
+<li><strong>run</strong>:<ol>
+<li>当<code>self.active</code>为<code>True</code>时，处理网络包。<code>self.pcap.dispatch(0, self.packet_handler)</code></li>
+</ol>
+</li>
+</ul>
+<h3 id="NetworkMonitorPedrpcServer"><a href="#NetworkMonitorPedrpcServer" class="headerlink" title="NetworkMonitorPedrpcServer"></a>NetworkMonitorPedrpcServer</h3><p>实例化该类必须指定的参数有：</p>
+<ul>
+<li>hostname / IP</li>
+<li>port</li>
+<li>monitor_device =&gt; self.device</li>
+</ul>
+<p>实现的几个重要的函数有：</p>
+<ul>
+<li><strong>pre_send</strong>: <ol>
+<li><code>self.pcap = pcapy.open_live(self.device, -1, 1, 100)</code>。</li>
+<li>设置过滤器。</li>
+<li>创建PcapThread实例 =&gt; self.pcap_thread。</li>
+<li><code>self.pcap_thread.start()</code>。</li>
+</ol>
+</li>
+<li><strong>post_send</strong>:<ol>
+<li>记录捕获的数据长度。</li>
+<li>调用<code>self.__stop()</code>函数。实现的时候将<code>self.pcap_thread.active</code>置为<code>False</code>，将<code>self.pcap_thread</code>置为<code>None</code>。</li>
+<li>返回数据长度。</li>
+</ol>
+</li>
+</ul>
+<h2 id="监控部分总结"><a href="#监控部分总结" class="headerlink" title="监控部分总结"></a>监控部分总结</h2><ol>
+<li>所有server都是继承了<code>pedrpc_server</code>。</li>
+<li>待补充。。。。</li>
+</ol>
 ]]></content>
     </entry>
     
