@@ -212,7 +212,7 @@
 </ul>
 </li>
 </ul>
-<h2 id="process-monitor-unix"><a href="#process-monitor-unix" class="headerlink" title="process_monitor_unix"></a>process_monitor_unix</h2><p>该脚本是适用于unix系统的，实现了以下两个类：</p>
+<h2 id="process-monitor-unix"><a href="#process-monitor-unix" class="headerlink" title="process_monitor_unix"></a>process_monitor_unix</h2><p>该脚本是适用于unix系统的，引入了sulley的pedrpc，实现了以下两个类：</p>
 <ul>
 <li>debugger_thead</li>
 <li>nix_process_monitor_pedrpc_server</li>
