@@ -4,6 +4,12 @@
   
     
     <entry>
+      <title></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/06/14/peach%E7%9B%91%E6%8E%A7/</url>
+      <content type="html"></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[白帽子讲web安全-阅读笔记]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/06/14/%E7%99%BD%E5%B8%BD%E5%AD%90%E8%AE%B2web%E5%AE%89%E5%85%A8-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/</url>
       <content type="html"><![CDATA[<h2 id="第二篇-客户端脚本安全"><a href="#第二篇-客户端脚本安全" class="headerlink" title="第二篇 客户端脚本安全"></a>第二篇 客户端脚本安全</h2><h3 id="浏览器安全"><a href="#浏览器安全" class="headerlink" title="浏览器安全"></a>浏览器安全</h3><h4 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h4><p><strong>浏览器的通关侧略，限制了来自不同源的“document”或脚本，对当前“document”读取或设置某些属性</strong></p>
@@ -713,7 +719,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#x3a;&#104;&#117;&#x73;&#116;&#x67;&#x6f;&#x63;&#107;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;">&#104;&#117;&#x73;&#116;&#x67;&#x6f;&#x63;&#107;&#x40;&#x67;&#109;&#x61;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#109;</a></li>
+<li>邮箱：<a href="&#109;&#x61;&#105;&#x6c;&#x74;&#x6f;&#58;&#104;&#117;&#x73;&#116;&#103;&#x6f;&#x63;&#107;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#x6d;">&#104;&#117;&#x73;&#116;&#103;&#x6f;&#x63;&#107;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#111;&#x6d;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
