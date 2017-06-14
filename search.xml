@@ -291,6 +291,29 @@
     </entry>
     
     <entry>
+      <title><![CDATA[Libbpg-0.9.7 (bpgenc) Null Pointer Dereference]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/</url>
+      <content type="html"><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><p>I have found a vulnerability when I fuzzed libbpg-0.9.7 using the fuzzer which developed by myself. The vulnerability is null pointer dereference due to missing check the return value of function malloc in BPG encoder. The vulnerability happens when converting JPEG format to BPG format. The vulnerability can cause Denial-of-Service (DoS) .<br>Software and Environments<br>Software: libbpg-0.9.7(<a href="http://bellard.org/bpg/" target="_blank" rel="external">http://bellard.org/bpg/</a>)<br>        (download from: <a href="http://bellard.org/bpg/libbpg-0.9.7.tar.gz" target="_blank" rel="external">http://bellard.org/bpg/libbpg-0.9.7.tar.gz</a>)<br>Operating System: Ubuntu 16.04 i686 Desktop<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974413478318.jpg" alt=""></p>
+<p>Compilers: gcc<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974413578675.jpg" alt=""></p>
+<h1 id="Reproducing"><a href="#Reproducing" class="headerlink" title="Reproducing"></a>Reproducing</h1><figure class="highlight stata"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> to <span class="comment">/* path of libbpg source code*/</span></div><div class="line">make –<span class="built_in">j</span></div><div class="line">./bpgenc <span class="comment">/*full path of PoC file*/</span> -o <span class="keyword">out</span></div></pre></td></tr></table></figure>
+<h1 id="Exception"><a href="#Exception" class="headerlink" title="Exception"></a>Exception</h1><p>Parsing the PoC file with the bpgenc compiled by GCC.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414005526.jpg" alt=""></p>
+<h1 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h1><p>The vulnerability is caused when converting JPEG image to BPG image, which happens in function ../libbpg/bogenc.c: gray8_to_gray(…).<br>Using rr to debug it and printing backtrace infomation.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414167347.jpg" alt=""></p>
+<p>The crash happens at line 255, bpgenc.c, and set a breakpoint at line 255, then prints the the address of y_ptr.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414292762.jpg" alt=""></p>
+<p>y_ptr is delivered by img-&gt;data[idx] + img-&gt;linesize[idx] * y in function read_jpeg. And the address of img-&gt;data is abnormal.<br>Set a breakpoint at line 1405 in the function read_jpeg, and print the value img-&gt;data.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414397242.jpg" alt=""></p>
+<p>The definition of img-&gt;data as follow:<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414512823.jpg" alt=""></p>
+<p>Img-&gt;data initialized at line 1303 in function image_alloc.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974414769807.jpg" alt=""></p>
+<p>Set a breakpoint at line 717, and print the value of img-&gt;data[i], the value of w1, h1, img-&gt;pixel_shift and linesize.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974415085689.jpg" alt=""></p>
+<p><code>linesize * h1 = 68000 * 56064 = 3812352000( = 3G)</code><br>It is too big to allocate in the heap. So function malloc returns 0x0, represents failure.<br>The value of w1, h1 are related to the cinfo.image_width (w) and cinfo.image_height (h) which can be found in the PoC file.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974415363136.jpg" alt=""></p>
+<p>PoC file:<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974415461776.jpg" alt=""></p>
+<p>In order to make bpgenc pass the function gray8_to_gray at line 255, we need make cinfo.raw_data_out == false by constructing the JPEG image as follow.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974415583179.jpg" alt=""></p>
+<p>We need make comp_hv do not equal to 0x111111, 0x111121 or 0x111122.<br><img src="/MyBlog/2017/01/30/Libbpg-0-9-7-bpgenc-Null-Pointer-Dereference/14974415733666.jpg" alt=""></p>
+<h1 id="Patch-recommendation"><a href="#Patch-recommendation" class="headerlink" title="Patch recommendation"></a>Patch recommendation</h1><p>In function image_malloc</p>
+<h1 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h1><p>One vulnerability exists in libbpg-0.9.7. It exists in the code responsible for converting JPEG image to BPG image. It is caused by a null pointer dereference.  The vulnerability can cause Denial-of-Service.</p>
+<h1 id="Author"><a href="#Author" class="headerlink" title="Author"></a>Author</h1><p>name: Meifang, Yang @VARAS of IIE<br>organization: IIE (<a href="http://iie.ac.cn/" target="_blank" rel="external">http://iie.ac.cn/</a>)</p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Libbpg-0.9.7 (bpgdec) Heap Buffer Overflow Vulnerability]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/01/14/Libbpg-0-9-7-bpgdec-Heap-Buffer-Overflow-Vulnerability/</url>
       <content type="html"><![CDATA[<h1 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h1><p>I have found a vulnerability when I fuzzed libbpg-0.9.7 using the fuzzer which developed by myself. The vulnerability is a heap buffer overflow due to missing check the index value of a heap buffer in BPG decoder. The vulnerability happens when decodes the BPG image. But I am not sure whether it can cause Arbitrary-Code-Execution, maybe it can in some use cases.</p>
@@ -619,7 +642,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#x61;&#x69;&#x6c;&#x74;&#111;&#58;&#104;&#117;&#115;&#116;&#103;&#x6f;&#x63;&#x6b;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#x6d;">&#104;&#117;&#115;&#116;&#103;&#x6f;&#x63;&#x6b;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#x2e;&#99;&#x6f;&#x6d;</a></li>
+<li>邮箱：<a href="&#x6d;&#x61;&#x69;&#x6c;&#x74;&#x6f;&#58;&#104;&#117;&#x73;&#x74;&#x67;&#111;&#x63;&#107;&#64;&#103;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;">&#104;&#117;&#x73;&#x74;&#x67;&#111;&#x63;&#107;&#64;&#103;&#109;&#97;&#x69;&#x6c;&#x2e;&#x63;&#x6f;&#x6d;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
