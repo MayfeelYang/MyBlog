@@ -291,6 +291,50 @@
     </entry>
     
     <entry>
+      <title><![CDATA[Libbpg-0.9.7 (bpgdec) Heap Buffer Overflow Vulnerability]]></title>
+      <url>http://mayfeelyang.github.io/MyBlog/2017/01/14/Libbpg-0-9-7-bpgdec-Heap-Buffer-Overflow-Vulnerability/</url>
+      <content type="html"><![CDATA[<h1 id="Libbpg-0-9-7-bpgdec-Heap-Buffer-Overflow-Vulnerability"><a href="#Libbpg-0-9-7-bpgdec-Heap-Buffer-Overflow-Vulnerability" class="headerlink" title="Libbpg-0.9.7 (bpgdec) Heap Buffer Overflow Vulnerability"></a>Libbpg-0.9.7 (bpgdec) Heap Buffer Overflow Vulnerability</h1><h2 id="Overview"><a href="#Overview" class="headerlink" title="Overview"></a>Overview</h2><p>I have found a vulnerability when I fuzzed libbpg-0.9.7 using the fuzzer which developed by myself. The vulnerability is a heap buffer overflow due to missing check the index value of a heap buffer in BPG decoder. The vulnerability happens when decodes the BPG image. But I am not sure whether it can cause Arbitrary-Code-Execution, maybe it can in some use cases.</p>
+<h2 id="Software-and-Environments"><a href="#Software-and-Environments" class="headerlink" title="Software and Environments"></a>Software and Environments</h2><p>Software: libbpg-0.9.7(<a href="http://bellard.org/bpg/" target="_blank" rel="external">http://bellard.org/bpg/</a>)<br>        (download from: <a href="http://bellard.org/bpg/libbpg-0.9.7.tar.gz" target="_blank" rel="external">http://bellard.org/bpg/libbpg-0.9.7.tar.gz</a>)<br>        Operating System: Ubuntu 16.04 i686 Desktop<br>        <img src="/MyBlog/2017/01/14/Libbpg-0-9-7-bpgdec-Heap-Buffer-Overflow-Vulnerability/14974388511331.jpg" alt=""></p>
+<pre><code>Compilers: Clang
+![](media/14974388638431.jpg)
+</code></pre><h2 id="Reproducing"><a href="#Reproducing" class="headerlink" title="Reproducing"></a>Reproducing</h2><pre><code><figure class="highlight vim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">cd</span> <span class="keyword">to</span> /* path of libbpg <span class="keyword">source</span> code*/</div><div class="line"><span class="keyword">make</span> –<span class="keyword">j</span></div><div class="line">./bpgdec /*full path of PoC <span class="keyword">file</span>*/</div></pre></td></tr></table></figure>
+</code></pre><h2 id="Exception"><a href="#Exception" class="headerlink" title="Exception"></a>Exception</h2><pre><code>Parsing the PoC file with the bpgdec compiled by Clang.
+![](media/14974389101826.jpg)
+</code></pre><h2 id="Analysis"><a href="#Analysis" class="headerlink" title="Analysis"></a>Analysis</h2><pre><code>    The vulnerability is caused when decoding BPG image, which happens in function ../libbpg/libbpg.c: build_msps(...).
+    Using rr to debug it and printing backtrace infomation.
+    ![](media/14974389238646.jpg)
+
+    The crash happens at line 256, libbpg.c. And the heap buffer named “buf”overflows. At the same time, the data of msps_buf is come from input file which user can control its contents.
+    ![](media/14974390019566.jpg)
+
+    set a breakpoint at line 256, then prints the the value of idx and i before crashing.
+    ![](media/14974390111680.jpg)
+
+    The length of Buf is buf_len, the value of buf_len is 13868, and the value of msps_len is 13578. Then the value of idx is 13868, so buf will overflow in the next loop. 
+    The reason of heap buffer overflow is when special input file satisfies the condition as follow:
+
+    <figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if ((<span class="name">i</span> + <span class="number">1</span>) &lt; msps_len <span class="symbol">&amp;&amp;</span> msps_buf[i] == <span class="number">0</span> <span class="symbol">&amp;&amp;</span> msps_buf[i + <span class="number">1</span>] == <span class="number">0</span>)</div></pre></td></tr></table></figure>
+
+The value of idx will increase by 3, but the value of i only increase by 2. In the PoC file, the position marked by red color can satisfy this condition. Assuming this situation occurs many times, I guess that it will lead to heap buffer overflow.
+![](media/14974390386468.jpg)
+
+In order to make bpgdec pass the function build_msps at line 256, in the libbpg.c, we need make the PoC file has a BPG header. And the length field of every region cannot less than zero and cannot equal to 0x80.
+The Length Check source code as follow, the constructed input pass the function get_ue32 should return the value which is greater than zero.
+![](media/14974390477357.jpg)
+</code></pre><h2 id="PoC-file"><a href="#PoC-file" class="headerlink" title="PoC file:"></a>PoC file:</h2><pre><code>![](media/14974390552816.jpg)
+
+And in every region, we need construct many 00 00，in order to satisfy the condition:
+
+<figure class="highlight lisp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if ((<span class="name">i</span> + <span class="number">1</span>) &lt; msps_len <span class="symbol">&amp;&amp;</span> msps_buf[i] == <span class="number">0</span> <span class="symbol">&amp;&amp;</span> msps_buf[i + <span class="number">1</span>] == <span class="number">0</span>)</div></pre></td></tr></table></figure>
+</code></pre><h2 id="Patch-recommendation"><a href="#Patch-recommendation" class="headerlink" title="Patch recommendation"></a>Patch recommendation</h2><pre><code>In function build_msps.
+![](media/14974390986033.jpg)
+</code></pre><h2 id="Conclusion"><a href="#Conclusion" class="headerlink" title="Conclusion"></a>Conclusion</h2><pre><code>One vulnerability exists in libbpg-0.9.7. It exists in the code responsible for decoding BPG image, and missing check the index value of a heap buffer in BPG decoder. In some use cases of bpgdec, it is possible to achieve remote code execution.
+</code></pre><h2 id="Author"><a href="#Author" class="headerlink" title="Author"></a>Author</h2><pre><code>name: Meifang, Yang @VARAS of IIE
+organization: IIE (http://iie.ac.cn/)
+</code></pre>]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[几种常见模式识别算法的整理和总结]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/01/11/PatternRecognition&MachineLearning/%E5%87%A0%E7%A7%8D%E5%B8%B8%E8%A7%81%E6%A8%A1%E5%BC%8F%E8%AF%86%E5%88%AB%E7%AE%97%E6%B3%95%E7%9A%84%E6%95%B4%E7%90%86%E5%92%8C%E6%80%BB%E7%BB%93/</url>
       <content type="html"><![CDATA[<h1 id="1-K-Nearest-Neighbor"><a href="#1-K-Nearest-Neighbor" class="headerlink" title="1.K-Nearest Neighbor"></a>1.K-Nearest Neighbor</h1><p>K-NN可以说是一种最直接的用来分类未知数据的方法。基本通过下面这张图跟文字说明就可以明白K-NN是干什么的<br><img src="/MyBlog/2017/01/11/PatternRecognition&MachineLearning/几种常见模式识别算法的整理和总结/h.png" alt="k-nn"><br>简单来说，K-NN可以看成：有那么一堆你已经知道分类的数据，然后当一个新数据进入的时候，就开始跟训练数据里的每个点求距离，然后挑离这个训练数据最近的K个点看看这几个点属于什么类型，然后用少数服从多数的原则，给新数据归类。一个比较好的介绍k-NN的课件可以见下面链接，图文并茂，我当时一看就懂了<br><a href="http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf" target="_blank" rel="external">http://courses.cs.tamu.edu/rgutier/cs790_w02/l8.pdf</a></p>
@@ -595,7 +639,7 @@
 <h2 id="关于收费"><a href="#关于收费" class="headerlink" title="关于收费"></a>关于收费</h2><p><strong>马克飞象</strong>为新用户提供 10 天的试用期，试用期过后需要<a href="maxiang.info/vip.html">续费</a>才能继续使用。未购买或者未及时续费，将不能同步新的笔记。之前保存过的笔记依然可以编辑。</p>
 <h2 id="反馈与建议"><a href="#反馈与建议" class="headerlink" title="反馈与建议"></a>反馈与建议</h2><ul>
 <li>微博：<a href="http://weibo.com/u/2788354117" target="_blank" rel="external">@马克飞象</a>，<a href="http://weibo.com/ggock" title="开发者个人账号" target="_blank" rel="external">@GGock</a></li>
-<li>邮箱：<a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#x68;&#117;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;">&#x68;&#117;&#115;&#116;&#x67;&#111;&#99;&#x6b;&#64;&#103;&#x6d;&#97;&#105;&#x6c;&#46;&#x63;&#111;&#x6d;</a></li>
+<li>邮箱：<a href="&#109;&#x61;&#x69;&#108;&#116;&#111;&#x3a;&#104;&#x75;&#115;&#x74;&#103;&#x6f;&#x63;&#x6b;&#64;&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#99;&#x6f;&#109;">&#104;&#x75;&#115;&#x74;&#103;&#x6f;&#x63;&#x6b;&#64;&#x67;&#x6d;&#x61;&#x69;&#108;&#46;&#99;&#x6f;&#109;</a></li>
 </ul>
 <hr>
 <p>感谢阅读这份帮助文档。请点击右上角，绑定印象笔记账号，开启全新的记录与分享体验吧。</p>
