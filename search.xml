@@ -6,7 +6,7 @@
     <entry>
       <title><![CDATA[ReverseMe#1学习笔记]]></title>
       <url>http://mayfeelyang.github.io/MyBlog/2017/06/27/ReverseMe-1%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
-      <content type="html"><![CDATA[<h1 id="ReverseMe-1笔记"><a href="#ReverseMe-1笔记" class="headerlink" title="ReverseMe#1笔记"></a>ReverseMe#1笔记</h1><h2 id="程序需下载地址"><a href="#程序需下载地址" class="headerlink" title="程序需下载地址"></a>程序需下载地址</h2><p><a href="http://reteam.org/ID-RIP/database/santmat/rm1.zip" target="_blank" rel="external">http://reteam.org/ID-RIP/database/santmat/rm1.zip</a></p>
+      <content type="html"><![CDATA[<h1 id="ReverseMe-1笔记"><a href="#ReverseMe-1笔记" class="headerlink" title="ReverseMe#1笔记"></a>ReverseMe#1笔记</h1><h2 id="程序下载地址"><a href="#程序下载地址" class="headerlink" title="程序下载地址"></a>程序下载地址</h2><p><a href="http://reteam.org/ID-RIP/database/santmat/rm1.zip" target="_blank" rel="external">http://reteam.org/ID-RIP/database/santmat/rm1.zip</a></p>
 <h2 id="题目要求"><a href="#题目要求" class="headerlink" title="题目要求"></a>题目要求</h2><p>一个邪恶博士手里有这个发射原子弹的程序,你不能完全破坏这个程序,必须给它加上一个口令,使邪恶博士不能进入</p>
 <h2 id="运行程序"><a href="#运行程序" class="headerlink" title="运行程序"></a>运行程序</h2><p>首先会蹦出题目要求的窗口<br><img src="/MyBlog/2017/06/27/ReverseMe-1学习笔记/14984593586822.jpg" alt=""><br>点击“Continue to the Program”后会出现：<br><img src="/MyBlog/2017/06/27/ReverseMe-1学习笔记/14984593913728.jpg" alt=""><br>“Nuke the World!!!”就是发射导弹，“Exit the Program”就是退出程序。</p>
 <h2 id="解题"><a href="#解题" class="headerlink" title="解题"></a>解题</h2><p>使用IDA查看反汇编，找到关键代码，发现弹出窗口使用“CreateWindowExA”函数实现。<br><img src="/MyBlog/2017/06/27/ReverseMe-1学习笔记/14984596877098.jpg" alt=""><br>msdn对该函数的解释：</p>
